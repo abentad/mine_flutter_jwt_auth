@@ -1,9 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_node_auth/controller/auth_controller.dart';
+import 'package:flutter_node_auth/view/home_screen.dart';
 import 'package:flutter_node_auth/view/sign_in.dart';
+import 'package:get/get.dart';
+import 'package:get/instance_manager.dart';
 
 class SignUp extends StatelessWidget {
-  const SignUp({Key? key}) : super(key: key);
+  SignUp({Key? key}) : super(key: key);
+
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -12,6 +20,7 @@ class SignUp extends StatelessWidget {
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
+          reverse: true,
           child: Container(
             decoration: const BoxDecoration(),
             child: Column(
@@ -32,6 +41,7 @@ class SignUp extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: TextFormField(
+                    controller: _usernameController,
                     cursorColor: Colors.black,
                     style: const TextStyle(fontSize: 18.0),
                     decoration: InputDecoration(
@@ -53,6 +63,7 @@ class SignUp extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: TextFormField(
+                    controller: _emailController,
                     cursorColor: Colors.black,
                     style: const TextStyle(fontSize: 18.0),
                     decoration: InputDecoration(
@@ -74,6 +85,7 @@ class SignUp extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: TextFormField(
+                    controller: _passwordController,
                     cursorColor: Colors.black,
                     style: const TextStyle(fontSize: 18.0),
                     obscureText: true,
@@ -103,7 +115,12 @@ class SignUp extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: MaterialButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      bool _result = await Get.find<AuthController>().signUpUser(_usernameController.text, _emailController.text, _passwordController.text);
+                      if (_result) {
+                        Get.offAll(() => const HomeScreen(), transition: Transition.fade);
+                      }
+                    },
                     color: Colors.black,
                     minWidth: double.infinity,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
@@ -136,8 +153,7 @@ class SignUp extends StatelessWidget {
                     const Text("Already have an account?", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16.0)),
                     TextButton(
                       // onPressed: () => Navigator.push(context, CupertinoPageRoute(builder: (context) => const SignIn())),
-                      onPressed: () =>
-                          Navigator.pushAndRemoveUntil(context, CupertinoPageRoute(builder: (context) => const SignIn()), (route) => route.isFirst),
+                      onPressed: () => Navigator.pushAndRemoveUntil(context, CupertinoPageRoute(builder: (context) => SignIn()), (route) => route.isFirst),
                       child: const Text(
                         'Sign in',
                         style: TextStyle(decoration: TextDecoration.underline, fontWeight: FontWeight.w600, fontSize: 16.0, color: Colors.black),

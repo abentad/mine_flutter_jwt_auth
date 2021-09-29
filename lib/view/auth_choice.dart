@@ -40,7 +40,7 @@ class AuthChoice extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
               child: MaterialButton(
-                onPressed: () => Navigator.push(context, CupertinoPageRoute(builder: (context) => const SignUp())),
+                onPressed: () => Navigator.push(context, CupertinoPageRoute(builder: (context) => SignUp())),
                 color: Colors.black,
                 minWidth: double.infinity,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
@@ -74,7 +74,7 @@ class AuthChoice extends StatelessWidget {
               children: [
                 const Text("Already have an account?", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16.0)),
                 TextButton(
-                  onPressed: () => Navigator.push(context, CupertinoPageRoute(builder: (context) => const SignIn())),
+                  onPressed: () => Navigator.push(context, CupertinoPageRoute(builder: (context) => SignIn())),
                   child: const Text(
                     'Sign in',
                     style: TextStyle(decoration: TextDecoration.underline, fontWeight: FontWeight.w600, fontSize: 16.0, color: Colors.black),

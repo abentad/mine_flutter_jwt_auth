@@ -1,8 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_node_auth/controller/auth_controller.dart';
+import 'package:flutter_node_auth/view/home_screen.dart';
+import 'package:get/get.dart';
 
 class SignIn extends StatelessWidget {
-  const SignIn({Key? key}) : super(key: key);
+  SignIn({Key? key}) : super(key: key);
+
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -11,6 +17,7 @@ class SignIn extends StatelessWidget {
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
+          reverse: true,
           child: Container(
             decoration: const BoxDecoration(),
             child: Column(
@@ -30,6 +37,7 @@ class SignIn extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: TextFormField(
+                    controller: _emailController,
                     cursorColor: Colors.black,
                     style: const TextStyle(fontSize: 18.0),
                     decoration: InputDecoration(
@@ -51,6 +59,7 @@ class SignIn extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: TextFormField(
+                    controller: _passwordController,
                     cursorColor: Colors.black,
                     style: const TextStyle(fontSize: 18.0),
                     obscureText: true,
@@ -83,7 +92,12 @@ class SignIn extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: MaterialButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      bool _result = await Get.find<AuthController>().signInUser(_emailController.text, _passwordController.text);
+                      if (_result) {
+                        Get.offAll(() => const HomeScreen(), transition: Transition.fade);
+                      }
+                    },
                     color: Colors.black,
                     minWidth: double.infinity,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
@@ -97,13 +111,9 @@ class SignIn extends StatelessWidget {
                   children: [
                     const Text("Don't have an account?", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16.0)),
                     TextButton(
-                      onPressed: () =>
-                          // Navigator.pushAndRemoveUntil(context, CupertinoPageRoute(builder: (context) => const SignUp()), (route) => route.isFirst),
-                          Navigator.pop(context),
-                      child: const Text(
-                        'Sign up',
-                        style: TextStyle(decoration: TextDecoration.underline, fontWeight: FontWeight.w600, fontSize: 16.0, color: Colors.black),
-                      ),
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text('Sign up',
+                          style: TextStyle(decoration: TextDecoration.underline, fontWeight: FontWeight.w600, fontSize: 16.0, color: Colors.black)),
                     ),
                   ],
                 ),
