@@ -22,6 +22,17 @@ class HomeScreen extends StatelessWidget {
                 Text(controller.currentUser!.username!.capitalize.toString()),
                 Text(controller.currentUser!.email!.capitalize.toString()),
                 Text(controller.currentUser!.userId!.capitalize.toString()),
+                Text(controller.currentUser!.profile!.capitalize.toString()),
+                CircleAvatar(
+                  radius: 50.0,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(50.0),
+                    child: Image(
+                      //TODO: change the link
+                      image: NetworkImage('http://10.0.2.2:3000/${controller.currentUser!.profile}'),
+                    ),
+                  ),
+                ),
                 SizedBox(height: size.height * 0.04),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),

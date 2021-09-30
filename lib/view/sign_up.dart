@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_node_auth/controller/auth_controller.dart';
@@ -5,6 +7,7 @@ import 'package:flutter_node_auth/view/home_screen.dart';
 import 'package:flutter_node_auth/view/sign_in.dart';
 import 'package:get/get.dart';
 import 'package:get/instance_manager.dart';
+import 'package:image_picker/image_picker.dart';
 
 class SignUp extends StatelessWidget {
   SignUp({Key? key}) : super(key: key);
@@ -116,7 +119,9 @@ class SignUp extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: MaterialButton(
                     onPressed: () async {
-                      bool _result = await Get.find<AuthController>().signUpUser(_usernameController.text, _emailController.text, _passwordController.text);
+                      File file = await Get.find<AuthController>().chooseImage(ImageSource.gallery);
+                      bool _result =
+                          await Get.find<AuthController>().signUpUser(_usernameController.text, _emailController.text, _passwordController.text, file);
                       if (_result) {
                         Get.offAll(() => const HomeScreen(), transition: Transition.fade);
                       }

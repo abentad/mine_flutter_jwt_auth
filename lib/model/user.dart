@@ -5,14 +5,16 @@ class User {
   String? username;
   String? email;
   String? token;
-  User({this.userId, this.username, this.email, this.token});
+  String? profile;
+  User({this.userId, this.username, this.email, this.token, this.profile});
 
-  User copyWith({String? userId, String? username, String? email, String? token}) {
+  User copyWith({String? userId, String? username, String? email, String? token, String? profile}) {
     return User(
       userId: userId ?? this.userId,
       username: username ?? this.username,
       email: email ?? this.email,
       token: token ?? this.token,
+      profile: profile ?? this.profile,
     );
   }
 
@@ -22,6 +24,7 @@ class User {
       'username': username,
       'email': email,
       'token': token,
+      'profile': profile,
     };
   }
 
@@ -31,6 +34,7 @@ class User {
       username: map['username'],
       email: map['email'],
       token: map['token'],
+      profile: map['profile'],
     );
   }
 
@@ -40,18 +44,18 @@ class User {
 
   @override
   String toString() {
-    return 'User(userId: $userId, username: $username, email: $email, token: $token)';
+    return 'User(userId: $userId, username: $username, email: $email, token: $token, profile: $profile)';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is User && other.userId == userId && other.username == username && other.email == email && other.token == token;
+    return other is User && other.userId == userId && other.username == username && other.email == email && other.token == token && other.profile == profile;
   }
 
   @override
   int get hashCode {
-    return userId.hashCode ^ username.hashCode ^ email.hashCode ^ token.hashCode;
+    return userId.hashCode ^ username.hashCode ^ email.hashCode ^ token.hashCode ^ profile.hashCode;
   }
 }
