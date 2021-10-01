@@ -9,12 +9,13 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:get/instance_manager.dart';
+import 'package:get/route_manager.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 
 class AuthController extends GetxController {
-  // String authRouteBase = 'http://shopri.rentoch.com/user';
-  String authRouteBase = "http://10.0.2.2:3000/user";
+  String authRouteBase = 'http://shopri.rentoch.com/user';
+  // String authRouteBase = "http://10.0.2.2:3000/user";
   //secure storage
   final _storage = const FlutterSecureStorage();
   final String _tokenKey = "token";
@@ -31,10 +32,10 @@ class AuthController extends GetxController {
     if (token != null) {
       bool result = await signInWithToken(token);
       if (result) {
-        Get.to(() => const HomeScreen());
+        Get.offAll(() => const HomeScreen(), transition: Transition.cupertino);
       }
     } else {
-      Get.to(() => const AuthChoice());
+      Get.offAll(() => const AuthChoice(), transition: Transition.cupertino);
     }
   }
 
@@ -106,7 +107,7 @@ class AuthController extends GetxController {
   void signOut() async {
     if (await _storage.read(key: _tokenKey) != null) {
       await _storage.write(key: _tokenKey, value: null);
-      Get.offAll(() => const AuthChoice());
+      Get.offAll(() => const AuthChoice(), transition: Transition.cupertino);
     }
   }
 }
