@@ -80,7 +80,8 @@ class BuildTopBar extends StatelessWidget {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(50.0),
                     child: Image(
-                      image: NetworkImage('http://shopri.rentoch.com/${controller.currentUser!.profile}'),
+                      // image: NetworkImage('http://shopri.rentoch.com/${controller.currentUser!.profile}'),
+                      image: NetworkImage('http://10.0.2.2:3000/${controller.currentUser!.profile}'),
                     ),
                   ),
                 ),

@@ -14,8 +14,8 @@ import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 
 class AuthController extends GetxController {
-  String authRouteBase = 'http://shopri.rentoch.com/user';
-  // String authRouteBase = "http://10.0.2.2:3000/user";
+  // String authRouteBase = 'http://shopri.rentoch.com/user';
+  String authRouteBase = "http://10.0.2.2:3000/user";
   //secure storage
   final _storage = const FlutterSecureStorage();
   final String _tokenKey = "token";

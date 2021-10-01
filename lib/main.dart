@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter_Node_Auth',
       theme: ThemeData(
         scaffoldBackgroundColor: Colors.white,
-        primarySwatch: Colors.grey,
+        primarySwatch: Colors.teal,
       ),
       home: const Root(),
     );

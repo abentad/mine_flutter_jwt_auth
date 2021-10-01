@@ -19,20 +19,20 @@ class _HomeScreenState extends State<HomeScreen> {
   double bottomBarBottomOffset = 20.0;
 
   _scrollListener() {
-    //scroll up
-    if (_scrollController.position.userScrollDirection == ScrollDirection.forward) {
-      setState(() {
-        topBarTopOffset = -120.0;
-        bottomBarBottomOffset = 20.0;
-      });
+    // //scroll up
+    // if (_scrollController.position.userScrollDirection == ScrollDirection.forward) {
+    //   setState(() {
+    //     topBarTopOffset = -120.0;
+    //     bottomBarBottomOffset = 20.0;
+    //   });
 
-      //scroll down
-    } else if (_scrollController.position.userScrollDirection == ScrollDirection.reverse) {
-      setState(() {
-        topBarTopOffset = 10.0;
-        bottomBarBottomOffset = -120.0;
-      });
-    }
+    //   //scroll down
+    // } else if (_scrollController.position.userScrollDirection == ScrollDirection.reverse) {
+    //   setState(() {
+    //     topBarTopOffset = 10.0;
+    //     bottomBarBottomOffset = -120.0;
+    //   });
+    // }
   }
 
   @override
@@ -47,6 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
+      floatingActionButton: FloatingActionButton(onPressed: () {}, child: Icon(Icons.add)),
       body: SafeArea(
         child: Container(
           width: double.infinity,
@@ -63,21 +64,38 @@ class _HomeScreenState extends State<HomeScreen> {
                         // physics: const BouncingScrollPhysics(),
                         gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                           maxCrossAxisExtent: 200,
-                          childAspectRatio: 3 / 2,
+                          childAspectRatio: 1.0,
                           crossAxisSpacing: 20,
                           mainAxisSpacing: 20,
                         ),
                         itemCount: 20,
                         itemBuilder: (BuildContext ctx, index) {
-                          return Container(
-                            margin: index.isEven || index == 0 ? const EdgeInsets.only(left: 20.0) : const EdgeInsets.only(right: 20.0),
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              color: const Color(0xfff2f2f2),
-                              borderRadius: BorderRadius.circular(15),
-                              boxShadow: const [BoxShadow(color: Colors.grey, offset: Offset(2, 3), blurRadius: 10.0)],
-                            ),
-                            child: const Text('name'),
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  margin: index.isEven || index == 0 ? const EdgeInsets.only(left: 20.0) : const EdgeInsets.only(right: 20.0),
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xfff2f2f2),
+                                    borderRadius: BorderRadius.circular(15),
+                                    // boxShadow: const [BoxShadow(color: Colors.grey, offset: Offset(2, 3), blurRadius: 10.0)],
+                                  ),
+                                  child: const Text('name'),
+                                ),
+                              ),
+                              SizedBox(height: size.height * 0.01),
+                              Padding(
+                                padding: index.isEven || index == 0 ? const EdgeInsets.only(left: 20.0) : const EdgeInsets.only(right: 20.0),
+                                child: const Text('AKG N700NCM2 Wireless Headphones', style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold)),
+                              ),
+                              SizedBox(height: size.height * 0.01),
+                              Padding(
+                                padding: index.isEven || index == 0 ? const EdgeInsets.only(left: 20.0) : const EdgeInsets.only(right: 20.0),
+                                child: const Text('\$200.00', style: TextStyle(fontSize: 13.0, color: Colors.grey)),
+                              ),
+                            ],
                           );
                         },
                       ),
@@ -96,7 +114,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                 ),
               ),
-              Positioned(bottom: bottomBarBottomOffset, left: 0.0, right: 0.0, child: const BuildBottomBar()),
+              // Positioned(bottom: bottomBarBottomOffset, left: 0.0, right: 0.0, child: const BuildBottomBar()),
             ],
           ),
         ),
