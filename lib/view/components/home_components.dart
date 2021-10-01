@@ -42,14 +42,20 @@ class BuildTopBar extends StatelessWidget {
     return Container(
       // height: size.height * 0.1,
       padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-      margin: const EdgeInsets.symmetric(horizontal: 20.0),
+      margin: const EdgeInsets.symmetric(horizontal: 5.0),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(10.0),
-        boxShadow: const [BoxShadow(color: Colors.grey, offset: Offset(2, 7), blurRadius: 20.0)],
+        // border: Border.all(color: Colors.red, width: 1.0),
+        // boxShadow: const [BoxShadow(color: Colors.grey, offset: Offset(2, 7), blurRadius: 20.0)],
       ),
       child: Row(
         children: [
+          IconButton(
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+              },
+              icon: const Icon(Icons.menu, color: Colors.black, size: 28.0)),
           Expanded(
             child: TextFormField(
               cursorColor: Colors.black,
@@ -59,7 +65,6 @@ class BuildTopBar extends StatelessWidget {
                 filled: true,
                 // fillColor: const Color(0xfff2f2f2),
                 fillColor: Colors.white,
-                prefixIcon: const Icon(Icons.search),
                 hintText: "Search here...",
                 hintStyle: const TextStyle(color: Colors.grey, fontSize: 14.0),
                 enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0), borderSide: const BorderSide(color: Colors.white, width: 1.0)),
@@ -76,7 +81,7 @@ class BuildTopBar extends StatelessWidget {
                 onTap: onProfileTap,
                 borderRadius: BorderRadius.circular(50.0),
                 child: CircleAvatar(
-                  radius: 22.0,
+                  radius: 18.0,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(50.0),
                     child: Image(
