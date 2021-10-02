@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter_node_auth/controller/api_controller.dart';
 import 'package:flutter_node_auth/model/user.dart';
 import 'package:flutter_node_auth/view/auth_choice.dart';
 import 'package:flutter_node_auth/view/home_screen.dart';
@@ -14,8 +15,8 @@ import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 
 class AuthController extends GetxController {
-  // String authRouteBase = 'http://shopri.rentoch.com/user';
-  String authRouteBase = "http://10.0.2.2:3000/user";
+  String authRouteBase = 'http://shopri.rentoch.com/user';
+  // String authRouteBase = "http://10.0.2.2:3000/user";
   //secure storage
   final _storage = const FlutterSecureStorage();
   final String _tokenKey = "token";
@@ -65,6 +66,8 @@ class AuthController extends GetxController {
       if (response.statusCode == 201) {
         _currentUser = User.fromJson(response.toString());
         await _storage.write(key: _tokenKey, value: _currentUser!.token);
+        print('fetching products');
+        Get.find<ApiController>().getProducts();
         print(_currentUser!.userId);
         return true;
       }
@@ -84,6 +87,8 @@ class AuthController extends GetxController {
     if (response.statusCode == 200) {
       _currentUser = User.fromJson(response.body);
       await _storage.write(key: _tokenKey, value: _currentUser!.token);
+      print('fetching products');
+      Get.find<ApiController>().getProducts();
       print(_currentUser!.userId);
       return true;
     }

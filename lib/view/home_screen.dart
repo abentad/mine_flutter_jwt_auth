@@ -44,7 +44,11 @@ class HomeScreen extends StatelessWidget {
 
     return Scaffold(
       drawer: const Drawer(),
-      floatingActionButton: FloatingActionButton(onPressed: () {}, child: const Icon(Icons.add)),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        backgroundColor: Colors.black,
+        child: const Icon(Icons.add, color: Colors.white),
+      ),
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
@@ -65,23 +69,47 @@ class HomeScreen extends StatelessWidget {
             SliverPersistentHeader(
               pinned: true,
               delegate: _SliverAppBarDelegate(
-                minHeight: size.height * 0.07,
-                maxHeight: size.height * 0.07,
+                minHeight: size.height * 0.065,
+                maxHeight: size.height * 0.065,
                 child: Container(
                   decoration: const BoxDecoration(color: Colors.white),
                   child: ListView.builder(
                     physics: const BouncingScrollPhysics(),
                     scrollDirection: Axis.horizontal,
                     itemCount: 8,
-                    itemBuilder: (context, index) => Container(
-                      margin: index == 0 ? const EdgeInsets.only(left: 20.0, right: 10.0, bottom: 10.0) : const EdgeInsets.only(right: 10.0, bottom: 10.0),
-                      padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5.0),
-                        color: Colors.teal,
-                      ),
-                      child: Center(child: Text('Category $index', style: const TextStyle(color: Colors.white))),
-                    ),
+                    itemBuilder: (context, index) {
+                      if (index == 0) {
+                        return Row(
+                          children: [
+                            Container(
+                              margin:
+                                  index == 0 ? const EdgeInsets.only(left: 20.0, right: 10.0, bottom: 10.0) : const EdgeInsets.only(right: 10.0, bottom: 10.0),
+                              padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5.0),
+                                color: const Color(0xff444941),
+                                border: Border.all(color: const Color(0xfff8f8f8), width: 1.0),
+                              ),
+                              child: const Center(child: Text('All', style: TextStyle(color: Colors.white))),
+                            ),
+                            Container(
+                              margin: const EdgeInsets.only(bottom: 10.0, right: 10.0),
+                              decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 0.5)),
+                            ),
+                          ],
+                        );
+                      }
+                      return Container(
+                        margin: index == 0 ? const EdgeInsets.only(left: 20.0, right: 10.0, bottom: 10.0) : const EdgeInsets.only(right: 10.0, bottom: 10.0),
+                        padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(50.0),
+                          color: const Color(0xfff2f2f2),
+                          border: Border.all(color: Colors.grey.shade300, width: 1.0),
+                        ),
+                        child: Center(child: Text('Category $index', style: const TextStyle(color: Colors.black))),
+                      );
+                    },
                   ),
                 ),
               ),

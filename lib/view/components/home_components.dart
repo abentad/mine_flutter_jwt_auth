@@ -40,22 +40,18 @@ class BuildTopBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      // height: size.height * 0.1,
-      padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-      margin: const EdgeInsets.symmetric(horizontal: 5.0),
+      padding: const EdgeInsets.symmetric(vertical: 5.0),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(10.0),
-        // border: Border.all(color: Colors.red, width: 1.0),
-        // boxShadow: const [BoxShadow(color: Colors.grey, offset: Offset(2, 7), blurRadius: 20.0)],
       ),
       child: Row(
         children: [
-          IconButton(
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
-              icon: const Icon(Icons.menu, color: Colors.black, size: 28.0)),
+          InkWell(
+            onTap: () => Scaffold.of(context).openDrawer(),
+            child: const Icon(Icons.menu, color: Color(0xff444941), size: 28.0),
+          ),
+          SizedBox(width: size.width * 0.02),
           Expanded(
             child: TextFormField(
               cursorColor: Colors.black,
@@ -64,9 +60,10 @@ class BuildTopBar extends StatelessWidget {
                 contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
                 filled: true,
                 // fillColor: const Color(0xfff2f2f2),
+                prefixIcon: const Icon(Icons.search),
                 fillColor: Colors.white,
-                hintText: "Search here...",
-                hintStyle: const TextStyle(color: Colors.grey, fontSize: 14.0),
+                hintText: "Search here",
+                hintStyle: const TextStyle(color: Colors.grey, fontSize: 16.0),
                 enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0), borderSide: const BorderSide(color: Colors.white, width: 1.0)),
                 focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0), borderSide: const BorderSide(color: Colors.white, width: 1.0)),
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0), borderSide: const BorderSide(color: Colors.white, width: 1.0)),
@@ -75,20 +72,15 @@ class BuildTopBar extends StatelessWidget {
           ),
           SizedBox(width: size.width * 0.06),
           GetBuilder<AuthController>(
-            builder: (controller) => Container(
-              decoration: BoxDecoration(border: Border.all(color: Colors.green, width: 2.0), shape: BoxShape.circle),
-              child: InkWell(
-                onTap: onProfileTap,
+            builder: (controller) => InkWell(
+              onTap: onProfileTap,
+              borderRadius: BorderRadius.circular(50.0),
+              child: ClipRRect(
                 borderRadius: BorderRadius.circular(50.0),
-                child: CircleAvatar(
-                  radius: 18.0,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(50.0),
-                    child: Image(
-                      // image: NetworkImage('http://shopri.rentoch.com/${controller.currentUser!.profile}'),
-                      image: NetworkImage('http://10.0.2.2:3000/${controller.currentUser!.profile}'),
-                    ),
-                  ),
+                child: Image(
+                  image: NetworkImage('http://shopri.rentoch.com/${controller.currentUser!.profile}'),
+                  height: 35.0,
+                  width: 35.0,
                 ),
               ),
             ),

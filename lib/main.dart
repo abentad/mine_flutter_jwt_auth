@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_node_auth/controller/api_controller.dart';
 import 'package:flutter_node_auth/controller/auth_controller.dart';
 import 'package:flutter_node_auth/view/root.dart';
 import 'package:get/instance_manager.dart';
@@ -10,6 +11,7 @@ void main() {
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(statusBarColor: Colors.white, statusBarIconBrightness: Brightness.dark));
   Get.put<AuthController>(AuthController());
+  Get.put<ApiController>(ApiController());
   runApp(const MyApp());
 }
 
@@ -20,7 +22,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter_Node_Auth',
+      title: 'Shopri',
       theme: ThemeData(
         scaffoldBackgroundColor: Colors.white,
         primarySwatch: Colors.teal,
