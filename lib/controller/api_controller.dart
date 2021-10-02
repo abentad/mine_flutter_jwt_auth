@@ -1,11 +1,7 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:flutter_node_auth/model/product.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
-import 'package:http/http.dart' as http;
 
 class ApiController extends GetxController {
   String authRouteBase = 'http://shopri.rentoch.com';
@@ -13,7 +9,7 @@ class ApiController extends GetxController {
   final _storage = const FlutterSecureStorage();
   final String _tokenKey = "token";
   //
-  List<Product> _products = [];
+  final List<Product> _products = [];
   List<Product> get products => _products;
 
   ApiController() {
@@ -23,16 +19,32 @@ class ApiController extends GetxController {
   void getProducts() async {
     String? _token = await _storage.read(key: _tokenKey);
     if (_token != null) {
-      // Dio dio = Dio(BaseOptions(baseUrl: authRouteBase, connectTimeout: 5000, receiveTimeout: 100000, headers: {'x-access-token': _token}));
-      Dio dio = Dio(BaseOptions(baseUrl: authRouteBase, headers: {'x-access-token': _token}));
+      Dio dio = Dio(
+        BaseOptions(
+          baseUrl: authRouteBase,
+          connectTimeout: 10000,
+          receiveTimeout: 100000,
+          headers: {'x-access-token': _token},
+          responseType: ResponseType.json,
+        ),
+      );
       try {
         final response = await dio.get("/data/products");
         if (response.statusCode == 200) {
-          var _listDataJson = response.data as List;
-          // for (var i = 0; i < _listDataJson.length; i++) {
-          _products = _listDataJson.map((prod) => Product.fromJson(prod)).toList();
-          // }
+          for (var i = 0; i < response.data.length; i++) {
+            _products.add(
+              Product(
+                sId: response.data[i]['_id'],
+                name: response.data[i]['name'],
+                datePosted: response.data[i]['datePosted'],
+                description: response.data[i]['description'],
+                productImages: response.data[i]['productImages'],
+              ),
+            );
+          }
           print(_products.length);
+          print(_products[0].productImages);
+          update();
         }
       } catch (e) {
         print(e);

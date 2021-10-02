@@ -7,10 +7,10 @@ class Product {
   String? name;
   String? description;
   String? datePosted;
-  List<String>? productImages;
+  List<dynamic>? productImages;
   Product({this.sId, this.name, this.description, this.datePosted, this.productImages});
 
-  Product copyWith({String? sId, String? name, String? description, String? datePosted, List<String>? productImages}) {
+  Product copyWith({String? sId, String? name, String? description, String? datePosted, List<dynamic>? productImages}) {
     return Product(
       sId: sId ?? this.sId,
       name: name ?? this.name,
@@ -36,7 +36,7 @@ class Product {
       name: map['name'],
       description: map['description'],
       datePosted: map['datePosted'],
-      productImages: List<String>.from(map['productImages']),
+      productImages: List<dynamic>.from(map['productImages']),
     );
   }
 
