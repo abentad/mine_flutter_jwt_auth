@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_node_auth/controller/api_controller.dart';
+import 'package:flutter_node_auth/controller/auth_controller.dart';
 import 'package:flutter_node_auth/view/components/home_components.dart';
 import 'package:flutter_node_auth/view/settings.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
@@ -9,6 +12,8 @@ import 'package:get/get_utils/src/extensions/string_extensions.dart';
 import 'package:get/instance_manager.dart';
 import 'package:get/route_manager.dart';
 import 'dart:math' as math;
+
+import 'package:image_picker/image_picker.dart';
 
 class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   _SliverAppBarDelegate({
@@ -48,7 +53,17 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       drawer: const Drawer(),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () async {
+          File pickedFile = await Get.find<AuthController>().chooseImage(ImageSource.camera);
+          File croppedFile = await Get.find<AuthController>().cropImage(pickedFile);
+          bool result = await Get.find<ApiController>().postProduct('from phone', 'description from phone', croppedFile);
+          if (result) {
+            print('posted');
+          } else {
+            print('unable to post');
+          }
+          print(croppedFile);
+        },
         backgroundColor: Colors.black,
         child: const Icon(Icons.add, color: Colors.white),
       ),

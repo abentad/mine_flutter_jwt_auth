@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_node_auth/model/product.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -19,7 +21,7 @@ class ApiController extends GetxController {
   void getProducts() async {
     String? _token = await _storage.read(key: _tokenKey);
     if (_token != null) {
-      Dio dio = Dio(
+      Dio _dio = Dio(
         BaseOptions(
           baseUrl: authRouteBase,
           connectTimeout: 10000,
@@ -29,7 +31,7 @@ class ApiController extends GetxController {
         ),
       );
       try {
-        final response = await dio.get("/data/products");
+        final response = await _dio.get("/data/products");
         if (response.statusCode == 200) {
           for (var i = 0; i < response.data.length; i++) {
             _products.add(
@@ -52,5 +54,41 @@ class ApiController extends GetxController {
     } else {
       print('no token found skippng fetch');
     }
+  }
+
+  Future<bool> postProduct(String name, String description, File file) async {
+    String? _token = await _storage.read(key: _tokenKey);
+    if (_token != null) {
+      FormData formData = FormData.fromMap(
+        {
+          "name": name,
+          "description": description,
+          "gallery": await MultipartFile.fromFile(file.path),
+        },
+      );
+
+      Dio _dio = Dio(
+        BaseOptions(
+          baseUrl: authRouteBase,
+          connectTimeout: 10000,
+          receiveTimeout: 100000,
+          headers: {'x-access-token': _token},
+          responseType: ResponseType.json,
+        ),
+      );
+
+      try {
+        final response = await _dio.post('/data/post', data: formData);
+        if (response.statusCode == 201) {
+          return true;
+        }
+      } catch (e) {
+        print(e);
+      }
+    } else {
+      print('no token found skippng fetch');
+    }
+
+    return false;
   }
 }

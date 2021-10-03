@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_node_auth/controller/api_controller.dart';
 import 'package:flutter_node_auth/model/user.dart';
 import 'package:flutter_node_auth/view/auth_choice.dart';
@@ -12,6 +13,7 @@ import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:get/instance_manager.dart';
 import 'package:get/route_manager.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
 class AuthController extends GetxController {
@@ -44,8 +46,28 @@ class AuthController extends GetxController {
   Future<File> chooseImage(ImageSource imageSourse) async {
     final ImagePicker _picker = ImagePicker();
     final XFile? _image = await _picker.pickImage(source: imageSourse);
-    final File file = File(_image!.path);
-    return file;
+    return File(_image!.path);
+  }
+
+  Future<File> cropImage(File imageFile) async {
+    File? cropped = await ImageCropper.cropImage(
+      sourcePath: imageFile.path,
+      aspectRatioPresets: [
+        // CropAspectRatioPreset.square,
+        // CropAspectRatioPreset.ratio3x2,
+        // CropAspectRatioPreset.original,
+        CropAspectRatioPreset.ratio4x3,
+        // CropAspectRatioPreset.ratio16x9
+      ],
+      androidUiSettings: const AndroidUiSettings(
+        toolbarTitle: 'Crop Image',
+        toolbarColor: Colors.black,
+        toolbarWidgetColor: Colors.white,
+        initAspectRatio: CropAspectRatioPreset.ratio4x3,
+        lockAspectRatio: true,
+      ),
+    );
+    return File(cropped!.path);
   }
 
   //signup
