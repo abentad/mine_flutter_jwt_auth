@@ -5,6 +5,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_node_auth/controller/api_controller.dart';
 import 'package:flutter_node_auth/controller/auth_controller.dart';
 import 'package:flutter_node_auth/view/components/home_components.dart';
+import 'package:flutter_node_auth/view/product_add.dart';
 import 'package:flutter_node_auth/view/settings.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
@@ -54,15 +55,7 @@ class HomeScreen extends StatelessWidget {
       drawer: const Drawer(),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          File pickedFile = await Get.find<AuthController>().chooseImage(ImageSource.camera);
-          File croppedFile = await Get.find<AuthController>().cropImage(pickedFile);
-          bool result = await Get.find<ApiController>().postProduct('from phone', 'description from phone', croppedFile);
-          if (result) {
-            print('posted');
-          } else {
-            print('unable to post');
-          }
-          print(croppedFile);
+          Get.to(() => const ProductAdd(), transition: Transition.fade);
         },
         backgroundColor: Colors.black,
         child: const Icon(Icons.add, color: Colors.white),

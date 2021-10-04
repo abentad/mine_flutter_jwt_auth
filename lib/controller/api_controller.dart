@@ -45,7 +45,6 @@ class ApiController extends GetxController {
             );
           }
           print(_products.length);
-          print(_products[0].productImages);
           update();
         }
       } catch (e) {
@@ -56,14 +55,19 @@ class ApiController extends GetxController {
     }
   }
 
-  Future<bool> postProduct(String name, String description, File file) async {
+  Future<bool> postProduct(String name, String description, List<File> imageFiles) async {
     String? _token = await _storage.read(key: _tokenKey);
     if (_token != null) {
+      List<MultipartFile> _images = [];
+      for (File imageFile in imageFiles) {
+        _images.add(await MultipartFile.fromFile(imageFile.path));
+      }
+      print("image length to be uploaded: ${_images.length}");
       FormData formData = FormData.fromMap(
         {
           "name": name,
           "description": description,
-          "gallery": await MultipartFile.fromFile(file.path),
+          "gallery": _images,
         },
       );
 
