@@ -17,7 +17,7 @@ class ProductAdd extends StatefulWidget {
 class _ProductAddState extends State<ProductAdd> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
-  List<File> _imageFiles = [];
+  final List<File> _imageFiles = [];
 
   @override
   Widget build(BuildContext context) {

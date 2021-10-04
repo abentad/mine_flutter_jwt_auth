@@ -1,9 +1,6 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_node_auth/controller/api_controller.dart';
-import 'package:flutter_node_auth/controller/auth_controller.dart';
 import 'package:flutter_node_auth/view/components/home_components.dart';
 import 'package:flutter_node_auth/view/product_add.dart';
 import 'package:flutter_node_auth/view/settings.dart';
@@ -13,8 +10,6 @@ import 'package:get/get_utils/src/extensions/string_extensions.dart';
 import 'package:get/instance_manager.dart';
 import 'package:get/route_manager.dart';
 import 'dart:math' as math;
-
-import 'package:image_picker/image_picker.dart';
 
 class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   _SliverAppBarDelegate({
