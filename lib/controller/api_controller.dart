@@ -1,12 +1,12 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter_node_auth/constants.dart';
 import 'package:flutter_node_auth/model/product.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 
 class ApiController extends GetxController {
-  String authRouteBase = 'http://shopri.rentoch.com';
   //secure storage
   final _storage = const FlutterSecureStorage();
   final String _tokenKey = "token";
@@ -23,7 +23,7 @@ class ApiController extends GetxController {
     if (_token != null) {
       Dio _dio = Dio(
         BaseOptions(
-          baseUrl: authRouteBase,
+          baseUrl: kbaseUrl,
           connectTimeout: 10000,
           receiveTimeout: 100000,
           headers: {'x-access-token': _token},
@@ -33,6 +33,7 @@ class ApiController extends GetxController {
       try {
         final response = await _dio.get("/data/products");
         if (response.statusCode == 200) {
+          _products.clear();
           for (var i = 0; i < response.data.length; i++) {
             _products.add(
               Product(
@@ -73,7 +74,7 @@ class ApiController extends GetxController {
 
       Dio _dio = Dio(
         BaseOptions(
-          baseUrl: authRouteBase,
+          baseUrl: kbaseUrl,
           connectTimeout: 10000,
           receiveTimeout: 100000,
           headers: {'x-access-token': _token},

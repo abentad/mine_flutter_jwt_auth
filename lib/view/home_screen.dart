@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_node_auth/constants.dart';
 import 'package:flutter_node_auth/controller/api_controller.dart';
 import 'package:flutter_node_auth/view/components/home_components.dart';
 import 'package:flutter_node_auth/view/product_add.dart';
 import 'package:flutter_node_auth/view/settings.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:get/get_utils/src/extensions/string_extensions.dart';
@@ -122,51 +124,43 @@ class HomeScreen extends StatelessWidget {
             ),
             SliverToBoxAdapter(child: Container(height: size.height * 0.02)),
             GetBuilder<ApiController>(
-              builder: (controller) => SliverGrid(
-                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                  maxCrossAxisExtent: 200,
-                  childAspectRatio: 1.0,
-                  crossAxisSpacing: 20,
-                  mainAxisSpacing: 20,
-                ),
-                delegate: SliverChildBuilderDelegate(
-                  (BuildContext context, int index) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Container(
-                            margin: index.isEven || index == 0 ? const EdgeInsets.only(left: 20.0) : const EdgeInsets.only(right: 20.0),
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              color: const Color(0xfff2f2f2),
-                              borderRadius: BorderRadius.circular(15),
-                              image: DecorationImage(
-                                image: NetworkImage('http://shopri.rentoch.com/${controller.products[index].productImages![0]}'),
-                                fit: BoxFit.fill,
-                              ),
-                              // boxShadow: const [BoxShadow(color: Colors.grey, offset: Offset(2, 3), blurRadius: 10.0)],
-                            ),
-                          ),
+              builder: (controller) => SliverStaggeredGrid.countBuilder(
+                staggeredTileBuilder: (index) => const StaggeredTile.fit(1),
+                crossAxisCount: 2,
+                mainAxisSpacing: 20.0,
+                crossAxisSpacing: 20.0,
+                itemCount: controller.products.length,
+                itemBuilder: (context, index) => Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      margin: index.isEven || index == 0 ? const EdgeInsets.only(left: 20.0) : const EdgeInsets.only(right: 20.0),
+                      decoration: BoxDecoration(
+                          color: const Color(0xfff2f2f2),
+                          borderRadius: BorderRadius.circular(15),
+                          boxShadow: const [BoxShadow(color: Colors.grey, offset: Offset(2, 8), blurRadius: 10.0)]),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(15.0),
+                        child: Image(
+                          image: NetworkImage('$kbaseUrl/${controller.products[index].productImages![0]}'),
+                          fit: BoxFit.fill,
                         ),
-                        SizedBox(height: size.height * 0.01),
-                        Padding(
-                          padding: index.isEven || index == 0 ? const EdgeInsets.only(left: 20.0) : const EdgeInsets.only(right: 20.0),
-                          child:
-                              Text(controller.products[index].name!.capitalize.toString(), style: const TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold)),
-                        ),
-                        SizedBox(height: size.height * 0.01),
-                        Padding(
-                          padding: index.isEven || index == 0 ? const EdgeInsets.only(left: 20.0) : const EdgeInsets.only(right: 20.0),
-                          child: const Text('\$200.00', style: TextStyle(fontSize: 13.0, color: Colors.grey)),
-                        ),
-                      ],
-                    );
-                  },
-                  childCount: controller.products.length,
+                      ),
+                    ),
+                    SizedBox(height: size.height * 0.03),
+                    Padding(
+                      padding: index.isEven || index == 0 ? const EdgeInsets.only(left: 20.0) : const EdgeInsets.only(right: 20.0),
+                      child: Text(controller.products[index].name!.capitalize.toString(), style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
+                    ),
+                    SizedBox(height: size.height * 0.01),
+                    Padding(
+                      padding: index.isEven || index == 0 ? const EdgeInsets.only(left: 20.0) : const EdgeInsets.only(right: 20.0),
+                      child: const Text('\$200.00', style: TextStyle(fontSize: 15.0, color: Colors.grey)),
+                    ),
+                  ],
                 ),
               ),
-            ),
+            )
           ],
         ),
       ),

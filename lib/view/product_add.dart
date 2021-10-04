@@ -114,11 +114,51 @@ class _ProductAddState extends State<ProductAdd> {
                             child: InkWell(
                               onTap: () async {
                                 if (_imageFiles.length < 3) {
-                                  File pickedFile = await Get.find<AuthController>().chooseImage(ImageSource.camera);
-                                  File croppedFile = await Get.find<AuthController>().cropImage(pickedFile);
-                                  setState(() {
-                                    _imageFiles.add(croppedFile);
-                                  });
+                                  showModalBottomSheet(
+                                    context: context,
+                                    builder: (context) => Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        SizedBox(height: size.height * 0.02),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                                          child: MaterialButton(
+                                            onPressed: () async {
+                                              File pickedFile = await Get.find<AuthController>().chooseImage(ImageSource.camera);
+                                              File croppedFile = await Get.find<AuthController>().cropImage(pickedFile);
+                                              setState(() {
+                                                _imageFiles.add(croppedFile);
+                                              });
+                                            },
+                                            color: Colors.black,
+                                            minWidth: double.infinity,
+                                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+                                            height: size.height * 0.1,
+                                            child: const Text("Cammera", style: TextStyle(fontSize: 16.0, color: Colors.white)),
+                                          ),
+                                        ),
+                                        SizedBox(height: size.height * 0.02),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                                          child: MaterialButton(
+                                            onPressed: () async {
+                                              File pickedFile = await Get.find<AuthController>().chooseImage(ImageSource.gallery);
+                                              File croppedFile = await Get.find<AuthController>().cropImage(pickedFile);
+                                              setState(() {
+                                                _imageFiles.add(croppedFile);
+                                              });
+                                            },
+                                            color: Colors.black,
+                                            minWidth: double.infinity,
+                                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+                                            height: size.height * 0.1,
+                                            child: const Text("Gallery", style: TextStyle(fontSize: 16.0, color: Colors.white)),
+                                          ),
+                                        ),
+                                        SizedBox(height: size.height * 0.02),
+                                      ],
+                                    ),
+                                  );
                                 } else {
                                   print('cant upload more than 3 images');
                                 }

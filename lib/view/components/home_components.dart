@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_node_auth/constants.dart';
 import 'package:flutter_node_auth/controller/auth_controller.dart';
 import 'package:get/get.dart';
 
@@ -78,7 +79,7 @@ class BuildTopBar extends StatelessWidget {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(50.0),
                 child: Image(
-                  image: NetworkImage('http://shopri.rentoch.com/${controller.currentUser!.profile}'),
+                  image: NetworkImage('$kbaseUrl/${controller.currentUser!.profile}'),
                   height: 35.0,
                   width: 35.0,
                 ),

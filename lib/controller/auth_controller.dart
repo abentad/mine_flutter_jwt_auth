@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_node_auth/constants.dart';
 import 'package:flutter_node_auth/controller/api_controller.dart';
 import 'package:flutter_node_auth/model/user.dart';
 import 'package:flutter_node_auth/view/auth_choice.dart';
@@ -17,8 +18,9 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
 class AuthController extends GetxController {
-  String authRouteBase = 'http://shopri.rentoch.com/user';
+  // String authRouteBase = 'http://shopri.rentoch.com/user';
   // String authRouteBase = "http://10.0.2.2:3000/user";
+
   //secure storage
   final _storage = const FlutterSecureStorage();
   final String _tokenKey = "token";
@@ -53,17 +55,17 @@ class AuthController extends GetxController {
     File? cropped = await ImageCropper.cropImage(
       sourcePath: imageFile.path,
       aspectRatioPresets: [
-        // CropAspectRatioPreset.square,
-        // CropAspectRatioPreset.ratio3x2,
-        // CropAspectRatioPreset.original,
+        CropAspectRatioPreset.square,
+        CropAspectRatioPreset.ratio3x2,
+        CropAspectRatioPreset.original,
         CropAspectRatioPreset.ratio4x3,
-        // CropAspectRatioPreset.ratio16x9
+        CropAspectRatioPreset.ratio16x9
       ],
       androidUiSettings: const AndroidUiSettings(
         toolbarTitle: 'Crop Image',
         toolbarColor: Colors.black,
         toolbarWidgetColor: Colors.white,
-        initAspectRatio: CropAspectRatioPreset.ratio4x3,
+        initAspectRatio: CropAspectRatioPreset.original,
         lockAspectRatio: true,
       ),
     );
@@ -72,7 +74,7 @@ class AuthController extends GetxController {
 
   //signup
   Future<bool> signUpUser(String username, String email, String password, File file) async {
-    String endPoint = authRouteBase + '/signup';
+    String endPoint = kbaseUrl + '/user/signup';
 
     FormData formData = FormData.fromMap({
       "username": username,
@@ -102,7 +104,7 @@ class AuthController extends GetxController {
   //signin
   Future<bool> signInUser(String email, String password) async {
     final response = await http.post(
-      Uri.parse(authRouteBase + '/signin'),
+      Uri.parse(kbaseUrl + '/user/signin'),
       headers: <String, String>{'Content-Type': 'application/json; charset=UTF-8'},
       body: jsonEncode(<String, String>{'email': email, 'password': password}),
     );
@@ -120,7 +122,7 @@ class AuthController extends GetxController {
   //signin
   Future<bool> signInWithToken(String token) async {
     final response = await http.get(
-      Uri.parse(authRouteBase + '/signinwithtoken'),
+      Uri.parse(kbaseUrl + '/user/signinwithtoken'),
       headers: <String, String>{'x-access-token': token},
     );
     if (response.statusCode == 200) {
