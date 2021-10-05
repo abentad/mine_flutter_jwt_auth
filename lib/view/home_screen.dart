@@ -40,10 +40,57 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   }
 }
 
-class HomeScreen extends StatelessWidget {
-  HomeScreen({Key? key}) : super(key: key);
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({Key? key}) : super(key: key);
 
-  List<String> categories = ["Cars", "Electronics", "Jobs", "Clothes", "Shoes", "House Hold"];
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  // final List<String> categories = ["Cars", "Electronics", "Jobs", "Clothes", "Shoes", "House Hold"];
+  final List<Map<String, dynamic>> categories = [
+    {"name": "Cars", "icon": Icons.car_rental},
+    {"name": "Electronics", "icon": Icons.laptop},
+    {"name": "Jobs", "icon": Icons.work},
+    {"name": "Clothes", "icon": Icons.shopping_bag},
+    {"name": "Shoes", "icon": Icons.handyman},
+    {"name": "Houses", "icon": Icons.house},
+    {},
+  ];
+  late ScrollController _hideButtonController;
+  late bool _isVisible;
+  @override
+  void initState() {
+    super.initState();
+    _isVisible = true;
+    _hideButtonController = ScrollController();
+    _hideButtonController.addListener(() {
+      if (_hideButtonController.position.userScrollDirection == ScrollDirection.reverse) {
+        if (_isVisible == true) {
+          /* only set when the previous state is false
+             * Less widget rebuilds 
+             */
+          print("**** $_isVisible up"); //Move IO away from setState
+          setState(() {
+            _isVisible = false;
+          });
+        }
+      } else {
+        if (_hideButtonController.position.userScrollDirection == ScrollDirection.forward) {
+          if (_isVisible == false) {
+            /* only set when the previous state is false
+               * Less widget rebuilds 
+               */
+            print("**** $_isVisible down"); //Move IO away from setState
+            setState(() {
+              _isVisible = true;
+            });
+          }
+        }
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,15 +98,19 @@ class HomeScreen extends StatelessWidget {
 
     return Scaffold(
       drawer: const Drawer(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          Get.to(() => const ProductAdd(), transition: Transition.cupertino);
-        },
-        backgroundColor: Colors.black,
-        child: const Icon(Icons.add, color: Colors.white),
+      floatingActionButton: Visibility(
+        visible: _isVisible,
+        child: FloatingActionButton(
+          onPressed: () async {
+            Get.to(() => const ProductAdd(), transition: Transition.cupertino);
+          },
+          backgroundColor: Colors.black,
+          child: const Icon(Icons.add, color: Colors.white),
+        ),
       ),
       body: SafeArea(
         child: CustomScrollView(
+          controller: _hideButtonController,
           slivers: [
             SliverPersistentHeader(
               floating: true,
@@ -91,7 +142,7 @@ class HomeScreen extends StatelessWidget {
                         child: ListView.builder(
                           physics: const BouncingScrollPhysics(),
                           scrollDirection: Axis.horizontal,
-                          itemCount: categories.length + 1,
+                          itemCount: categories.length,
                           itemBuilder: (context, index) {
                             if (index == 0) {
                               return Row(
@@ -124,8 +175,14 @@ class HomeScreen extends StatelessWidget {
                                 color: const Color(0xfff2f2f2),
                                 border: Border.all(color: Colors.grey.shade300, width: 1.0),
                               ),
-                              // ignore: unnecessary_string_interpolations
-                              child: Center(child: Text('${categories[index - 1]}', style: const TextStyle(color: Colors.black))),
+                              child: Row(
+                                children: [
+                                  Icon(categories[index]['icon']),
+                                  SizedBox(width: size.width * 0.02),
+                                  // ignore: unnecessary_string_interpolations
+                                  Center(child: Text('${categories[index - 1]['name']}', style: const TextStyle(color: Colors.black))),
+                                ],
+                              ),
                             );
                           },
                         ),
@@ -141,7 +198,7 @@ class HomeScreen extends StatelessWidget {
                 staggeredTileBuilder: (index) => const StaggeredTile.fit(1),
                 crossAxisCount: 2,
                 mainAxisSpacing: 20.0,
-                crossAxisSpacing: 10.0,
+                crossAxisSpacing: 0.0,
                 itemCount: controller.products.length,
                 itemBuilder: (context, index) => ProductCard(
                   controller: controller,
@@ -173,7 +230,7 @@ class ProductCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            margin: const EdgeInsets.symmetric(horizontal: 10.0),
+            margin: const EdgeInsets.symmetric(horizontal: 5.0),
             decoration: BoxDecoration(
               color: const Color(0xfff2f2f2),
               borderRadius: BorderRadius.only(topLeft: Radius.circular(radiusDouble), topRight: Radius.circular(radiusDouble)),
@@ -190,7 +247,7 @@ class ProductCard extends StatelessWidget {
           ),
           Container(
             width: double.infinity,
-            margin: const EdgeInsets.symmetric(horizontal: 10.0),
+            margin: const EdgeInsets.symmetric(horizontal: 5.0),
             padding: const EdgeInsets.only(left: 10.0),
             decoration: BoxDecoration(
               color: const Color(0xfff2f2f2),

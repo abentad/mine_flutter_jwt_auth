@@ -50,6 +50,7 @@ class _ProductAddState extends State<ProductAdd> {
               ),
               SizedBox(height: size.height * 0.02),
               TextFormField(
+                textInputAction: TextInputAction.done,
                 controller: _descriptionController,
                 cursorColor: Colors.black,
                 style: const TextStyle(fontSize: 18.0),
@@ -129,6 +130,7 @@ class _ProductAddState extends State<ProductAdd> {
                                               setState(() {
                                                 _imageFiles.add(croppedFile);
                                               });
+                                              Get.back();
                                             },
                                             color: Colors.black,
                                             minWidth: double.infinity,
@@ -147,6 +149,8 @@ class _ProductAddState extends State<ProductAdd> {
                                               setState(() {
                                                 _imageFiles.add(croppedFile);
                                               });
+
+                                              Get.back();
                                             },
                                             color: Colors.black,
                                             minWidth: double.infinity,

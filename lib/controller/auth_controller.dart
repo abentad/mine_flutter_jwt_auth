@@ -81,9 +81,9 @@ class AuthController extends GetxController {
     String endPoint = kbaseUrl + '/user/signup';
 
     FormData formData = FormData.fromMap({
-      "username": username,
-      "email": email,
-      "password": password,
+      "username": username.trim(),
+      "email": email.trim(),
+      "password": password.trim(),
       "profile": await MultipartFile.fromFile(file.path),
     });
 
@@ -110,7 +110,7 @@ class AuthController extends GetxController {
     final response = await http.post(
       Uri.parse(kbaseUrl + '/user/signin'),
       headers: <String, String>{'Content-Type': 'application/json; charset=UTF-8'},
-      body: jsonEncode(<String, String>{'email': email, 'password': password}),
+      body: jsonEncode(<String, String>{'email': email.trim(), 'password': password.trim()}),
     );
     if (response.statusCode == 200) {
       _currentUser = User.fromJson(response.body);
