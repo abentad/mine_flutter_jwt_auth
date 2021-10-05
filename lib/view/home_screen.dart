@@ -1,3 +1,6 @@
+import 'dart:math';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_node_auth/constants.dart';
@@ -60,6 +63,7 @@ class _HomeScreenState extends State<HomeScreen> {
   ];
   late ScrollController _hideButtonController;
   late bool _isVisible;
+
   @override
   void initState() {
     super.initState();
@@ -220,6 +224,8 @@ class ProductCard extends StatelessWidget {
   final int index;
   final Size size;
   final double radiusDouble;
+  double doubleInRange(Random source, num start, num end) => source.nextDouble() * (end - start) + start;
+
   @override
   Widget build(BuildContext context) {
     List<Product> _products = List.from(controller.products.reversed);
@@ -236,13 +242,26 @@ class ProductCard extends StatelessWidget {
               borderRadius: BorderRadius.only(topLeft: Radius.circular(radiusDouble), topRight: Radius.circular(radiusDouble)),
               boxShadow: const [BoxShadow(color: Colors.grey, offset: Offset(2, 8), blurRadius: 10.0)],
             ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.only(topLeft: Radius.circular(radiusDouble), topRight: Radius.circular(radiusDouble)),
-              child: Image(
-                // image: NetworkImage('$kbaseUrl/${controller.products[index].productImages![0]}'),
-                image: NetworkImage('$kbaseUrl/${_products[index].productImages![0]}'),
-                fit: BoxFit.fill,
+            // child: ClipRRect(
+            //   borderRadius: BorderRadius.only(topLeft: Radius.circular(radiusDouble), topRight: Radius.circular(radiusDouble)),
+            //   child: Image(
+            //     // image: NetworkImage('$kbaseUrl/${controller.products[index].productImages![0]}'),
+            //     image: NetworkImage('$kbaseUrl/${_products[index].productImages![0]}'),
+            //     fit: BoxFit.fill,
+            //   ),
+            // ),
+            child: CachedNetworkImage(
+              imageUrl: '$kbaseUrl/${_products[index].productImages![0]}',
+              placeholder: (context, url) => Container(
+                height: size.height * doubleInRange(Random.secure(), 0.2, 0.35),
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: const Color(0xfff2f2f2),
+                  borderRadius: BorderRadius.only(topLeft: Radius.circular(radiusDouble), topRight: Radius.circular(radiusDouble)),
+                  boxShadow: const [BoxShadow(color: Colors.grey, offset: Offset(2, 8), blurRadius: 10.0)],
+                ),
               ),
+              errorWidget: (context, url, error) => const Icon(Icons.error),
             ),
           ),
           Container(
