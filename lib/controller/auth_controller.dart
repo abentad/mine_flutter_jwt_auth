@@ -37,7 +37,7 @@ class AuthController extends GetxController {
     if (token != null) {
       bool result = await signInWithToken(token);
       if (result) {
-        Get.offAll(() => const HomeScreen(), transition: Transition.cupertino);
+        Get.offAll(() => HomeScreen(), transition: Transition.cupertino);
       }
     } else {
       Get.offAll(() => const AuthChoice(), transition: Transition.cupertino);
@@ -54,6 +54,10 @@ class AuthController extends GetxController {
   Future<File> cropImage(File imageFile) async {
     File? cropped = await ImageCropper.cropImage(
       sourcePath: imageFile.path,
+      // aspectRatio: const CropAspectRatio(ratioX: 1080.0, ratioY: 1920.0),
+      compressQuality: 40,
+      maxHeight: 1280,
+      maxWidth: 720,
       aspectRatioPresets: [
         CropAspectRatioPreset.square,
         CropAspectRatioPreset.ratio3x2,
@@ -66,7 +70,7 @@ class AuthController extends GetxController {
         toolbarColor: Colors.black,
         toolbarWidgetColor: Colors.white,
         initAspectRatio: CropAspectRatioPreset.original,
-        lockAspectRatio: true,
+        lockAspectRatio: false,
       ),
     );
     return File(cropped!.path);

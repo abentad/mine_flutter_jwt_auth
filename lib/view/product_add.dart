@@ -134,7 +134,7 @@ class _ProductAddState extends State<ProductAdd> {
                                             minWidth: double.infinity,
                                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
                                             height: size.height * 0.1,
-                                            child: const Text("Cammera", style: TextStyle(fontSize: 16.0, color: Colors.white)),
+                                            child: const Text("Camera", style: TextStyle(fontSize: 16.0, color: Colors.white)),
                                           ),
                                         ),
                                         SizedBox(height: size.height * 0.02),

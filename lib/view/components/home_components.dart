@@ -43,7 +43,7 @@ class BuildTopBar extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 5.0),
       decoration: BoxDecoration(
-        color: Colors.white,
+        // color: Colors.white,
         borderRadius: BorderRadius.circular(10.0),
       ),
       child: Row(
@@ -59,15 +59,15 @@ class BuildTopBar extends StatelessWidget {
               style: const TextStyle(fontSize: 18.0, color: Colors.black),
               decoration: InputDecoration(
                 contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
-                filled: true,
-                // fillColor: const Color(0xfff2f2f2),
                 prefixIcon: const Icon(Icons.search),
-                fillColor: Colors.white,
+                // fillColor: Colors.white,
                 hintText: "Search here",
                 hintStyle: const TextStyle(color: Colors.grey, fontSize: 16.0),
-                enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0), borderSide: const BorderSide(color: Colors.white, width: 1.0)),
-                focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0), borderSide: const BorderSide(color: Colors.white, width: 1.0)),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0), borderSide: const BorderSide(color: Colors.white, width: 1.0)),
+                enabledBorder:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(10.0), borderSide: const BorderSide(color: Colors.transparent, width: 1.0)),
+                focusedBorder:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(10.0), borderSide: const BorderSide(color: Colors.transparent, width: 1.0)),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0), borderSide: const BorderSide(color: Colors.transparent, width: 1.0)),
               ),
             ),
           ),
