@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_node_auth/constants.dart';
 import 'package:flutter_node_auth/controller/api_controller.dart';
-import 'package:flutter_node_auth/model/product.dart';
 import 'package:flutter_node_auth/view/components/home_components.dart';
 import 'package:flutter_node_auth/view/product_add.dart';
 import 'package:flutter_node_auth/view/settings.dart';
@@ -70,6 +69,10 @@ class _HomeScreenState extends State<HomeScreen> {
     _isVisible = true;
     _hideButtonController = ScrollController();
     _hideButtonController.addListener(() {
+      //TODO: fetch more item
+      if (_hideButtonController.position.pixels >= _hideButtonController.position.maxScrollExtent) {
+        Get.find<ApiController>().getProducts(false);
+      }
       if (_hideButtonController.position.userScrollDirection == ScrollDirection.reverse) {
         if (_isVisible == true) {
           /* only set when the previous state is false
@@ -94,6 +97,12 @@ class _HomeScreenState extends State<HomeScreen> {
         }
       }
     });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _hideButtonController.dispose();
   }
 
   @override
@@ -228,8 +237,6 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Product> _products = List.from(controller.products.reversed);
-
     return Container(
       decoration: const BoxDecoration(),
       child: Column(
@@ -242,26 +249,23 @@ class ProductCard extends StatelessWidget {
               borderRadius: BorderRadius.only(topLeft: Radius.circular(radiusDouble), topRight: Radius.circular(radiusDouble)),
               boxShadow: const [BoxShadow(color: Colors.grey, offset: Offset(2, 8), blurRadius: 10.0)],
             ),
-            // child: ClipRRect(
-            //   borderRadius: BorderRadius.only(topLeft: Radius.circular(radiusDouble), topRight: Radius.circular(radiusDouble)),
-            //   child: Image(
-            //     // image: NetworkImage('$kbaseUrl/${controller.products[index].productImages![0]}'),
-            //     image: NetworkImage('$kbaseUrl/${_products[index].productImages![0]}'),
-            //     fit: BoxFit.fill,
-            //   ),
-            // ),
-            child: CachedNetworkImage(
-              imageUrl: '$kbaseUrl/${_products[index].productImages![0]}',
-              placeholder: (context, url) => Container(
-                height: size.height * doubleInRange(Random.secure(), 0.2, 0.35),
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: const Color(0xfff2f2f2),
-                  borderRadius: BorderRadius.only(topLeft: Radius.circular(radiusDouble), topRight: Radius.circular(radiusDouble)),
-                  boxShadow: const [BoxShadow(color: Colors.grey, offset: Offset(2, 8), blurRadius: 10.0)],
+            child: ClipRRect(
+              borderRadius: BorderRadius.only(topLeft: Radius.circular(radiusDouble), topRight: Radius.circular(radiusDouble)),
+              child: CachedNetworkImage(
+                //TODO: reverse
+                imageUrl: '$kbaseUrl/${controller.products[index].productImages![0]}',
+                placeholder: (context, url) => Container(
+                  height: size.height * 0.15,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    // color: const Color(0xfff2f2f2),
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.only(topLeft: Radius.circular(radiusDouble), topRight: Radius.circular(radiusDouble)),
+                    // boxShadow: const [BoxShadow(color: Colors.grey, offset: Offset(2, 8), blurRadius: 10.0)],
+                  ),
                 ),
+                errorWidget: (context, url, error) => const Icon(Icons.error),
               ),
-              errorWidget: (context, url, error) => const Icon(Icons.error),
             ),
           ),
           Container(
@@ -270,6 +274,7 @@ class ProductCard extends StatelessWidget {
             padding: const EdgeInsets.only(left: 10.0),
             decoration: BoxDecoration(
               color: const Color(0xfff2f2f2),
+              // color: Colors.black,
               borderRadius: BorderRadius.only(bottomLeft: Radius.circular(radiusDouble), bottomRight: Radius.circular(radiusDouble)),
               boxShadow: const [BoxShadow(color: Colors.grey, offset: Offset(2, 8), blurRadius: 10.0)],
             ),
@@ -277,8 +282,8 @@ class ProductCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(height: size.height * 0.01),
-                // Text(controller.products[index].name!.capitalize.toString(), style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
-                Text(_products[index].name!.capitalize.toString(), style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
+                Text(controller.products[index].name!.capitalize.toString(),
+                    style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.black)),
                 SizedBox(height: size.height * 0.01),
                 const Text('\$200.00', style: TextStyle(fontSize: 15.0, color: Colors.grey)),
                 SizedBox(height: size.height * 0.02),

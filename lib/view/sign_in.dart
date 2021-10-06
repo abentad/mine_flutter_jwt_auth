@@ -95,7 +95,7 @@ class SignIn extends StatelessWidget {
                     onPressed: () async {
                       bool _result = await Get.find<AuthController>().signInUser(_emailController.text, _passwordController.text);
                       if (_result) {
-                        Get.offAll(() => HomeScreen(), transition: Transition.fade);
+                        Get.offAll(() => const HomeScreen(), transition: Transition.fade);
                       }
                     },
                     color: Colors.black,

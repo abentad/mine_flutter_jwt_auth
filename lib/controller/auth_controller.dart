@@ -37,7 +37,7 @@ class AuthController extends GetxController {
     if (token != null) {
       bool result = await signInWithToken(token);
       if (result) {
-        Get.offAll(() => HomeScreen(), transition: Transition.cupertino);
+        Get.offAll(() => const HomeScreen(), transition: Transition.cupertino);
       }
     } else {
       Get.offAll(() => const AuthChoice(), transition: Transition.cupertino);
@@ -95,7 +95,7 @@ class AuthController extends GetxController {
         _currentUser = User.fromJson(response.toString());
         await _storage.write(key: _tokenKey, value: _currentUser!.token);
         print('fetching products');
-        Get.find<ApiController>().getProducts();
+        Get.find<ApiController>().getProducts(true);
         print(_currentUser!.userId);
         return true;
       }
@@ -116,7 +116,7 @@ class AuthController extends GetxController {
       _currentUser = User.fromJson(response.body);
       await _storage.write(key: _tokenKey, value: _currentUser!.token);
       print('fetching products');
-      Get.find<ApiController>().getProducts();
+      Get.find<ApiController>().getProducts(true);
       print(_currentUser!.userId);
       return true;
     }
@@ -131,6 +131,8 @@ class AuthController extends GetxController {
     );
     if (response.statusCode == 200) {
       _currentUser = User.fromJson(response.body);
+      print('fetching products');
+      Get.find<ApiController>().getProducts(true);
       print(_currentUser!.userId);
       return true;
     }

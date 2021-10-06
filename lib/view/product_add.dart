@@ -186,7 +186,7 @@ class _ProductAddState extends State<ProductAdd> {
                   FocusScope.of(context).unfocus();
                   Get.to(() => const Loading(), transition: Transition.fade);
                   bool result = await Get.find<ApiController>().postProduct(_nameController.text, _descriptionController.text, _imageFiles);
-                  Get.find<ApiController>().getProducts();
+                  Get.find<ApiController>().getProducts(true);
                   Get.back();
                   if (result) {
                     print('posted');

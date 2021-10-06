@@ -15,10 +15,13 @@ class ApiController extends GetxController {
   List<Product> get products => _products;
 
   ApiController() {
-    getProducts();
+    // getProducts(true);
   }
+  //variables for fetching more products on scroll
+  int _pages = 2;
+  int _limits = 20;
 
-  void getProducts() async {
+  void getProducts(bool isinitcall) async {
     String? _token = await _storage.read(key: _tokenKey);
     if (_token != null) {
       Dio _dio = Dio(
@@ -31,22 +34,53 @@ class ApiController extends GetxController {
         ),
       );
       try {
-        final response = await _dio.get("/data/products");
-        if (response.statusCode == 200) {
-          _products.clear();
-          for (var i = 0; i < response.data.length; i++) {
-            _products.add(
-              Product(
-                sId: response.data[i]['_id'],
-                name: response.data[i]['name'],
-                datePosted: response.data[i]['datePosted'],
-                description: response.data[i]['description'],
-                productImages: response.data[i]['productImages'],
-              ),
-            );
+        if (isinitcall) {
+          int _page = 1;
+          int _limit = 20;
+          print('init fetch... page= $_page limit = $_limit');
+          final response = await _dio.get("/data/products?page=$_page&limit=$_limit");
+          if (response.statusCode == 200) {
+            _products.clear();
+            for (var i = 0; i < response.data['results'].length; i++) {
+              _products.add(
+                Product(
+                  sId: response.data['results'][i]['_id'],
+                  name: response.data['results'][i]['name'],
+                  datePosted: response.data['results'][i]['datePosted'],
+                  description: response.data['results'][i]['description'],
+                  productImages: response.data['results'][i]['productImages'],
+                ),
+              );
+            }
+            print(_products.length);
+            update();
           }
+        } else {
+          print('fetching more... page= $_pages limit = $_limits');
+          final response = await _dio.get("/data/products?page=$_pages&limit=$_limits");
+
+          //TODO: fetch more item
           print(_products.length);
-          update();
+          if (response.statusCode == 200) {
+            if (response.data['results'].isNotEmpty) {
+              for (var i = 0; i < response.data['results'].length; i++) {
+                _products.add(
+                  Product(
+                    sId: response.data['results'][i]['_id'],
+                    name: response.data['results'][i]['name'],
+                    datePosted: response.data['results'][i]['datePosted'],
+                    description: response.data['results'][i]['description'],
+                    productImages: response.data['results'][i]['productImages'],
+                  ),
+                );
+              }
+              print(_products.length);
+              _pages = _pages + 1;
+
+              print('next page: $_pages');
+              update();
+            }
+          }
         }
       } catch (e) {
         print(e);

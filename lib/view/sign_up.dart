@@ -123,7 +123,7 @@ class SignUp extends StatelessWidget {
                       bool _result =
                           await Get.find<AuthController>().signUpUser(_usernameController.text, _emailController.text, _passwordController.text, file);
                       if (_result) {
-                        Get.offAll(() => HomeScreen(), transition: Transition.fade);
+                        Get.offAll(() => const HomeScreen(), transition: Transition.fade);
                       }
                     },
                     color: Colors.black,
