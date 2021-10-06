@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_node_auth/constants.dart';
@@ -15,6 +16,8 @@ import 'package:get/get_utils/src/extensions/string_extensions.dart';
 import 'package:get/instance_manager.dart';
 import 'package:get/route_manager.dart';
 import 'dart:math' as math;
+
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   _SliverAppBarDelegate({
@@ -69,10 +72,9 @@ class _HomeScreenState extends State<HomeScreen> {
     _isVisible = true;
     _hideButtonController = ScrollController();
     _hideButtonController.addListener(() {
-      //TODO: fetch more item
-      if (_hideButtonController.position.pixels >= _hideButtonController.position.maxScrollExtent) {
-        Get.find<ApiController>().getProducts(false);
-      }
+      // if (_hideButtonController.position.pixels >= _hideButtonController.position.maxScrollExtent) {
+      //   Get.find<ApiController>().getProducts(false);
+      // }
       if (_hideButtonController.position.userScrollDirection == ScrollDirection.reverse) {
         if (_isVisible == true) {
           /* only set when the previous state is false
@@ -105,6 +107,41 @@ class _HomeScreenState extends State<HomeScreen> {
     _hideButtonController.dispose();
   }
 
+  final RefreshController _refreshController = RefreshController(initialRefresh: false);
+  void _onLoading() async {
+    // monitor network fetch
+    try {
+      bool result = await Get.find<ApiController>().getProducts(false);
+      // if failed,use loadFailed(),if no data return,use LoadNodata()
+      if (result) {
+        _refreshController.loadComplete();
+      } else {
+        _refreshController.loadNoData();
+
+        // _refreshController.loadFailed();
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  void _onRefresh() async {
+    // monitor network fetch
+    bool result = await Get.find<ApiController>().getProducts(true);
+    if (result) {
+      _refreshController.loadComplete();
+    } else {
+      _refreshController.loadNoData();
+      // _refreshController.loadFailed();
+    }
+    // if failed,use refreshFailed()
+    _refreshController.refreshCompleted();
+  }
+
+// onNotification: (notification) {
+//               notification.disallowGlow();
+//               return true;
+//             },
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -122,105 +159,142 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
       body: SafeArea(
-        child: CustomScrollView(
-          controller: _hideButtonController,
-          slivers: [
-            SliverPersistentHeader(
-              floating: true,
-              delegate: _SliverAppBarDelegate(
-                minHeight: size.height * 0.19,
-                maxHeight: size.height * 0.19,
-                child: Container(
-                  decoration: const BoxDecoration(color: Colors.white),
-                  child: Column(
-                    children: [
-                      SizedBox(height: size.height * 0.02),
-                      Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 10.0),
-                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                        decoration: BoxDecoration(
-                          color: const Color(0xfff2f2f2),
-                          borderRadius: BorderRadius.circular(10.0),
-                          boxShadow: [BoxShadow(color: Colors.grey.shade300, offset: const Offset(2, 7), blurRadius: 10.0)],
+        child: SmartRefresher(
+          controller: _refreshController,
+          physics: const BouncingScrollPhysics(),
+          enablePullUp: true,
+          enablePullDown: true,
+          onLoading: _onLoading,
+          onRefresh: _onRefresh,
+          header: const WaterDropHeader(refresh: CupertinoActivityIndicator(), complete: SizedBox.shrink(), completeDuration: Duration(milliseconds: 100)),
+          footer: CustomFooter(
+            builder: (context, mode) {
+              Widget body;
+              if (mode == LoadStatus.idle) {
+                body = const Text("pull up");
+              } else if (mode == LoadStatus.loading) {
+                //TODO: put your custom loading animation here
+                body = const CupertinoActivityIndicator();
+                // body = const CircularProgressIndicator();
+              } else if (mode == LoadStatus.failed) {
+                body = const Text("Load Failed!Click retry!");
+              } else if (mode == LoadStatus.canLoading) {
+                body = const Text("release to load more");
+              } else if (mode == LoadStatus.noMore) {
+                // body = Container(
+                //   width: double.infinity,
+                //   height: size.height * 0.2,
+                //   decoration: const BoxDecoration(color: Colors.black),
+                //   child: const Center(child: Text("No more items")),
+                // );
+                body = const SizedBox.shrink();
+              } else {
+                body = const Text("No more Data");
+              }
+              return SizedBox(height: 55.0, child: Center(child: body));
+            },
+          ),
+          child: CustomScrollView(
+            controller: _hideButtonController,
+            slivers: [
+              SliverPersistentHeader(
+                floating: true,
+                delegate: _SliverAppBarDelegate(
+                  minHeight: size.height * 0.19,
+                  maxHeight: size.height * 0.19,
+                  child: Container(
+                    decoration: const BoxDecoration(color: Colors.white),
+                    child: Column(
+                      children: [
+                        SizedBox(height: size.height * 0.02),
+                        Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 10.0),
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                          decoration: BoxDecoration(
+                            color: const Color(0xfff2f2f2),
+                            borderRadius: BorderRadius.circular(10.0),
+                            boxShadow: [BoxShadow(color: Colors.grey.shade300, offset: const Offset(2, 7), blurRadius: 10.0)],
+                          ),
+                          child: BuildTopBar(
+                            size: size,
+                            onProfileTap: () {
+                              Get.to(() => const Settings(), transition: Transition.cupertino);
+                            },
+                          ),
                         ),
-                        child: BuildTopBar(
-                          size: size,
-                          onProfileTap: () {
-                            Get.to(() => const Settings(), transition: Transition.cupertino);
-                          },
-                        ),
-                      ),
-                      SizedBox(height: size.height * 0.02),
-                      Expanded(
-                        child: ListView.builder(
-                          physics: const BouncingScrollPhysics(),
-                          scrollDirection: Axis.horizontal,
-                          itemCount: categories.length,
-                          itemBuilder: (context, index) {
-                            if (index == 0) {
-                              return Row(
-                                children: [
-                                  Container(
-                                    margin: index == 0
-                                        ? const EdgeInsets.only(left: 20.0, right: 10.0, bottom: 10.0)
-                                        : const EdgeInsets.only(right: 10.0, bottom: 10.0),
-                                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5.0),
-                                      color: const Color(0xff444941),
-                                      border: Border.all(color: const Color(0xfff8f8f8), width: 1.0),
+                        SizedBox(height: size.height * 0.02),
+                        Expanded(
+                          child: ListView.builder(
+                            physics: const BouncingScrollPhysics(),
+                            scrollDirection: Axis.horizontal,
+                            itemCount: categories.length,
+                            itemBuilder: (context, index) {
+                              if (index == 0) {
+                                return Row(
+                                  children: [
+                                    Container(
+                                      margin: index == 0
+                                          ? const EdgeInsets.only(left: 20.0, right: 10.0, bottom: 10.0)
+                                          : const EdgeInsets.only(right: 10.0, bottom: 10.0),
+                                      padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(5.0),
+                                        color: const Color(0xff444941),
+                                        border: Border.all(color: const Color(0xfff8f8f8), width: 1.0),
+                                      ),
+                                      child: const Center(child: Text('All', style: TextStyle(color: Colors.white))),
                                     ),
-                                    child: const Center(child: Text('All', style: TextStyle(color: Colors.white))),
-                                  ),
-                                  Container(
-                                    margin: const EdgeInsets.only(bottom: 10.0, right: 10.0),
-                                    decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 0.5)),
-                                  ),
-                                ],
+                                    Container(
+                                      margin: const EdgeInsets.only(bottom: 10.0, right: 10.0),
+                                      decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 0.5)),
+                                    ),
+                                  ],
+                                );
+                              }
+                              return Container(
+                                margin: index == 0
+                                    ? const EdgeInsets.only(left: 20.0, right: 10.0, bottom: 10.0)
+                                    : const EdgeInsets.only(right: 10.0, bottom: 10.0),
+                                padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(50.0),
+                                  color: const Color(0xfff2f2f2),
+                                  border: Border.all(color: Colors.grey.shade300, width: 1.0),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Icon(categories[index]['icon']),
+                                    SizedBox(width: size.width * 0.02),
+                                    // ignore: unnecessary_string_interpolations
+                                    Center(child: Text('${categories[index - 1]['name']}', style: const TextStyle(color: Colors.black))),
+                                  ],
+                                ),
                               );
-                            }
-                            return Container(
-                              margin:
-                                  index == 0 ? const EdgeInsets.only(left: 20.0, right: 10.0, bottom: 10.0) : const EdgeInsets.only(right: 10.0, bottom: 10.0),
-                              padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(50.0),
-                                color: const Color(0xfff2f2f2),
-                                border: Border.all(color: Colors.grey.shade300, width: 1.0),
-                              ),
-                              child: Row(
-                                children: [
-                                  Icon(categories[index]['icon']),
-                                  SizedBox(width: size.width * 0.02),
-                                  // ignore: unnecessary_string_interpolations
-                                  Center(child: Text('${categories[index - 1]['name']}', style: const TextStyle(color: Colors.black))),
-                                ],
-                              ),
-                            );
-                          },
+                            },
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-            SliverToBoxAdapter(child: Container(height: size.height * 0.02)),
-            GetBuilder<ApiController>(
-              builder: (controller) => SliverStaggeredGrid.countBuilder(
-                staggeredTileBuilder: (index) => const StaggeredTile.fit(1),
-                crossAxisCount: 2,
-                mainAxisSpacing: 20.0,
-                crossAxisSpacing: 0.0,
-                itemCount: controller.products.length,
-                itemBuilder: (context, index) => ProductCard(
-                  controller: controller,
-                  index: index,
-                  size: size,
+              SliverToBoxAdapter(child: Container(height: size.height * 0.02)),
+              GetBuilder<ApiController>(
+                builder: (controller) => SliverStaggeredGrid.countBuilder(
+                  staggeredTileBuilder: (index) => const StaggeredTile.fit(1),
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 20.0,
+                  crossAxisSpacing: 0.0,
+                  itemCount: controller.products.length,
+                  itemBuilder: (context, index) => ProductCard(
+                    controller: controller,
+                    index: index,
+                    size: size,
+                  ),
                 ),
-              ),
-            )
-          ],
+              )
+            ],
+          ),
         ),
       ),
     );

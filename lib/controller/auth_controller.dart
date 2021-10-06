@@ -95,9 +95,11 @@ class AuthController extends GetxController {
         _currentUser = User.fromJson(response.toString());
         await _storage.write(key: _tokenKey, value: _currentUser!.token);
         print('fetching products');
-        Get.find<ApiController>().getProducts(true);
-        print(_currentUser!.userId);
-        return true;
+        bool result = await Get.find<ApiController>().getProducts(true);
+        if (result == true) {
+          print(_currentUser!.userId);
+          return true;
+        }
       }
     } catch (e) {
       print(e);
@@ -116,9 +118,11 @@ class AuthController extends GetxController {
       _currentUser = User.fromJson(response.body);
       await _storage.write(key: _tokenKey, value: _currentUser!.token);
       print('fetching products');
-      Get.find<ApiController>().getProducts(true);
-      print(_currentUser!.userId);
-      return true;
+      bool result = await Get.find<ApiController>().getProducts(true);
+      if (result == true) {
+        print(_currentUser!.userId);
+        return true;
+      }
     }
     return false;
   }
@@ -132,9 +136,11 @@ class AuthController extends GetxController {
     if (response.statusCode == 200) {
       _currentUser = User.fromJson(response.body);
       print('fetching products');
-      Get.find<ApiController>().getProducts(true);
-      print(_currentUser!.userId);
-      return true;
+      bool result = await Get.find<ApiController>().getProducts(true);
+      if (result == true) {
+        print(_currentUser!.userId);
+        return true;
+      }
     }
     return false;
   }

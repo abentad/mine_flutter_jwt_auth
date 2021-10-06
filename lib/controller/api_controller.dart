@@ -14,14 +14,12 @@ class ApiController extends GetxController {
   final List<Product> _products = [];
   List<Product> get products => _products;
 
-  ApiController() {
-    // getProducts(true);
-  }
+  ApiController();
   //variables for fetching more products on scroll
   int _pages = 2;
-  int _limits = 20;
+  final int _limits = 20;
 
-  void getProducts(bool isinitcall) async {
+  Future<bool> getProducts(bool isinitcall) async {
     String? _token = await _storage.read(key: _tokenKey);
     if (_token != null) {
       Dio _dio = Dio(
@@ -37,7 +35,9 @@ class ApiController extends GetxController {
         if (isinitcall) {
           int _page = 1;
           int _limit = 20;
+          _pages = 2;
           print('init fetch... page= $_page limit = $_limit');
+
           final response = await _dio.get("/data/products?page=$_page&limit=$_limit");
           if (response.statusCode == 200) {
             _products.clear();
@@ -54,12 +54,11 @@ class ApiController extends GetxController {
             }
             print(_products.length);
             update();
+            return true;
           }
         } else {
           print('fetching more... page= $_pages limit = $_limits');
           final response = await _dio.get("/data/products?page=$_pages&limit=$_limits");
-
-          //TODO: fetch more item
           print(_products.length);
           if (response.statusCode == 200) {
             if (response.data['results'].isNotEmpty) {
@@ -76,18 +75,24 @@ class ApiController extends GetxController {
               }
               print(_products.length);
               _pages = _pages + 1;
-
               print('next page: $_pages');
+
               update();
+            } else {
+              return false;
             }
+            return true;
           }
         }
       } catch (e) {
         print(e);
+        return false;
       }
     } else {
       print('no token found skippng fetch');
+      return false;
     }
+    return false;
   }
 
   Future<bool> postProduct(String name, String description, List<File> imageFiles) async {
