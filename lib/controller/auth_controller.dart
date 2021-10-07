@@ -77,13 +77,14 @@ class AuthController extends GetxController {
   }
 
   //signup
-  Future<bool> signUpUser(String username, String email, String password, File file) async {
+  Future<bool> signUpUser(String username, String email, String phoneNumber, String password, File file) async {
     String endPoint = kbaseUrl + '/user/signup';
 
     FormData formData = FormData.fromMap({
       "username": username.trim(),
       "email": email.trim(),
       "password": password.trim(),
+      "phoneNumber": phoneNumber.trim(),
       "profile": await MultipartFile.fromFile(file.path),
     });
 

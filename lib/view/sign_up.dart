@@ -15,6 +15,7 @@ class SignUp extends StatelessWidget {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _phoneNumberController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -88,6 +89,29 @@ class SignUp extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: TextFormField(
+                    keyboardType: TextInputType.phone,
+                    controller: _phoneNumberController,
+                    cursorColor: Colors.black,
+                    style: const TextStyle(fontSize: 18.0),
+                    decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                      filled: true,
+                      fillColor: const Color(0xfff2f2f2),
+                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0), borderSide: const BorderSide(color: Color(0xfff2f2f2))),
+                      focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0), borderSide: const BorderSide(color: Color(0xfff2f2f2))),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0), borderSide: const BorderSide(color: Color(0xfff2f2f2))),
+                      prefixIcon: Padding(
+                        padding: const EdgeInsets.only(left: 10.0, right: 30),
+                        child: Text("+251", style: TextStyle(fontSize: 16.0, color: Colors.grey.shade600)),
+                      ),
+                      prefixIconConstraints: const BoxConstraints(minWidth: 0, minHeight: 0),
+                    ),
+                  ),
+                ),
+                SizedBox(height: size.height * 0.02),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: TextFormField(
                     controller: _passwordController,
                     cursorColor: Colors.black,
                     style: const TextStyle(fontSize: 18.0),
@@ -120,8 +144,8 @@ class SignUp extends StatelessWidget {
                   child: MaterialButton(
                     onPressed: () async {
                       File file = await Get.find<AuthController>().chooseImage(ImageSource.gallery);
-                      bool _result =
-                          await Get.find<AuthController>().signUpUser(_usernameController.text, _emailController.text, _passwordController.text, file);
+                      bool _result = await Get.find<AuthController>()
+                          .signUpUser(_usernameController.text, _emailController.text, _phoneNumberController.text, _passwordController.text, file);
                       if (_result) {
                         Get.offAll(() => const HomeScreen(), transition: Transition.fade);
                       }

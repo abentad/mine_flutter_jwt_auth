@@ -8,6 +8,7 @@ import 'package:flutter_node_auth/constants.dart';
 import 'package:flutter_node_auth/controller/api_controller.dart';
 import 'package:flutter_node_auth/view/components/home_components.dart';
 import 'package:flutter_node_auth/view/product_add.dart';
+import 'package:flutter_node_auth/view/product_detail.dart';
 import 'package:flutter_node_auth/view/settings.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
@@ -154,7 +155,7 @@ class _HomeScreenState extends State<HomeScreen> {
           onPressed: () async {
             Get.to(() => const ProductAdd(), transition: Transition.cupertino);
           },
-          backgroundColor: Colors.black,
+          backgroundColor: Colors.teal,
           child: const Icon(Icons.add, color: Colors.white),
         ),
       ),
@@ -175,19 +176,13 @@ class _HomeScreenState extends State<HomeScreen> {
               } else if (mode == LoadStatus.loading) {
                 //TODO: put your custom loading animation here
                 body = const CupertinoActivityIndicator();
-                // body = const CircularProgressIndicator();
               } else if (mode == LoadStatus.failed) {
                 body = const Text("Load Failed!Click retry!");
               } else if (mode == LoadStatus.canLoading) {
                 body = const Text("release to load more");
               } else if (mode == LoadStatus.noMore) {
-                // body = Container(
-                //   width: double.infinity,
-                //   height: size.height * 0.2,
-                //   decoration: const BoxDecoration(color: Colors.black),
-                //   child: const Center(child: Text("No more items")),
-                // );
-                body = const SizedBox.shrink();
+                // body = const SizedBox.shrink();
+                body = const Icon(Icons.done);
               } else {
                 body = const Text("No more Data");
               }
@@ -286,10 +281,15 @@ class _HomeScreenState extends State<HomeScreen> {
                   mainAxisSpacing: 20.0,
                   crossAxisSpacing: 0.0,
                   itemCount: controller.products.length,
-                  itemBuilder: (context, index) => ProductCard(
-                    controller: controller,
-                    index: index,
-                    size: size,
+                  itemBuilder: (context, index) => InkWell(
+                    onTap: () {
+                      Get.to(() => ProductDetail(selectedProductIndex: index), transition: Transition.cupertino);
+                    },
+                    child: ProductCard(
+                      controller: controller,
+                      index: index,
+                      size: size,
+                    ),
                   ),
                 ),
               )
@@ -321,7 +321,7 @@ class ProductCard extends StatelessWidget {
             decoration: BoxDecoration(
               color: const Color(0xfff2f2f2),
               borderRadius: BorderRadius.only(topLeft: Radius.circular(radiusDouble), topRight: Radius.circular(radiusDouble)),
-              boxShadow: const [BoxShadow(color: Colors.grey, offset: Offset(2, 8), blurRadius: 10.0)],
+              // boxShadow: const [BoxShadow(color: Colors.grey, offset: Offset(2, 8), blurRadius: 10.0)],
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.only(topLeft: Radius.circular(radiusDouble), topRight: Radius.circular(radiusDouble)),
@@ -350,7 +350,7 @@ class ProductCard extends StatelessWidget {
               color: const Color(0xfff2f2f2),
               // color: Colors.black,
               borderRadius: BorderRadius.only(bottomLeft: Radius.circular(radiusDouble), bottomRight: Radius.circular(radiusDouble)),
-              boxShadow: const [BoxShadow(color: Colors.grey, offset: Offset(2, 8), blurRadius: 10.0)],
+              // boxShadow: const [BoxShadow(color: Colors.grey, offset: Offset(2, 8), blurRadius: 10.0)],
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

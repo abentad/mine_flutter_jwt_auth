@@ -2,9 +2,11 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_node_auth/constants.dart';
+import 'package:flutter_node_auth/controller/auth_controller.dart';
 import 'package:flutter_node_auth/model/product.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
+import 'package:get/instance_manager.dart';
 
 class ApiController extends GetxController {
   //secure storage
@@ -45,6 +47,9 @@ class ApiController extends GetxController {
               _products.add(
                 Product(
                   sId: response.data['results'][i]['_id'],
+                  posterId: response.data['results'][i]['posterId'],
+                  posterName: response.data['results'][i]['posterName'],
+                  posterPhoneNumber: response.data['results'][i]['posterPhoneNumber'],
                   name: response.data['results'][i]['name'],
                   datePosted: response.data['results'][i]['datePosted'],
                   description: response.data['results'][i]['description'],
@@ -66,6 +71,9 @@ class ApiController extends GetxController {
                 _products.add(
                   Product(
                     sId: response.data['results'][i]['_id'],
+                    posterId: response.data['results'][i]['posterId'],
+                    posterName: response.data['results'][i]['posterName'],
+                    posterPhoneNumber: response.data['results'][i]['posterPhoneNumber'],
                     name: response.data['results'][i]['name'],
                     datePosted: response.data['results'][i]['datePosted'],
                     description: response.data['results'][i]['description'],
@@ -97,6 +105,10 @@ class ApiController extends GetxController {
 
   Future<bool> postProduct(String name, String description, List<File> imageFiles) async {
     String? _token = await _storage.read(key: _tokenKey);
+    String posterId = Get.find<AuthController>().currentUser!.userId.toString();
+    String posterName = Get.find<AuthController>().currentUser!.username.toString();
+    String posterPhoneNumber = Get.find<AuthController>().currentUser!.phoneNumber.toString();
+
     if (_token != null) {
       List<MultipartFile> _images = [];
       for (File imageFile in imageFiles) {
@@ -105,6 +117,9 @@ class ApiController extends GetxController {
       print("image length to be uploaded: ${_images.length}");
       FormData formData = FormData.fromMap(
         {
+          "posterId": posterId,
+          "posterName": posterName,
+          "posterPhoneNumber": posterPhoneNumber,
           "name": name,
           "description": description,
           "gallery": _images,
