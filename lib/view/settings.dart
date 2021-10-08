@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_node_auth/constants.dart';
 import 'package:flutter_node_auth/controller/auth_controller.dart';
+import 'package:flutter_node_auth/controller/lang_controller.dart';
 import 'package:get/get.dart';
 
 class Settings extends StatelessWidget {
@@ -43,6 +44,36 @@ class Settings extends StatelessWidget {
                         ],
                       ),
                     ],
+                  ),
+                ),
+                SizedBox(height: size.height * 0.08),
+                MaterialButton(
+                  onPressed: () {
+                    Get.find<LanguageController>().changeLanguage(langCode: 'en', countryCode: 'US');
+                    Get.back();
+                  },
+                  minWidth: double.infinity,
+                  color: Colors.black,
+                  height: 50.0,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+                  child: const Text(
+                    'English',
+                    style: TextStyle(color: Colors.white, fontSize: 18.0),
+                  ),
+                ),
+                SizedBox(height: size.height * 0.02),
+                MaterialButton(
+                  onPressed: () {
+                    Get.find<LanguageController>().changeLanguage(langCode: 'am', countryCode: 'ET');
+                    Get.back();
+                  },
+                  minWidth: double.infinity,
+                  color: Colors.black,
+                  height: 50.0,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+                  child: const Text(
+                    'Amharic',
+                    style: TextStyle(color: Colors.white, fontSize: 18.0),
                   ),
                 ),
                 const Spacer(),

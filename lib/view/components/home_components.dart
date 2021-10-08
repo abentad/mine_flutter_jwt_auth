@@ -61,7 +61,7 @@ class BuildTopBar extends StatelessWidget {
                 contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
                 prefixIcon: const Icon(Icons.search),
                 // fillColor: Colors.white,
-                hintText: "Search here",
+                hintText: 'search'.tr,
                 hintStyle: const TextStyle(color: Colors.grey, fontSize: 16.0),
                 enabledBorder:
                     OutlineInputBorder(borderRadius: BorderRadius.circular(10.0), borderSide: const BorderSide(color: Colors.transparent, width: 1.0)),
