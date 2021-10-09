@@ -170,7 +170,6 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _isInlineBannerAdLoaded = false;
 
   void _createInlineBannerAd() {
-    // AdSize adSize = const AdSize(height: 300, width: 50);
     _inlineBannerAd = BannerAd(
       size: AdSize.mediumRectangle,
       adUnitId: AdHelper.bannerAdUnitId,
