@@ -8,15 +8,25 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.2
+  #for storing user tokens and settings
   flutter_secure_storage: ^4.2.1
+  #for state managing
   get: ^4.3.8
+  #for http request
   dio: ^4.0.0
+  #for manipulating images
   image_picker: ^0.8.4+2
   image_cropper: ^1.4.1
+  #for displaying images in staggered gridview like pinterest
   flutter_staggered_grid_view: ^0.4.0
+  #for caching network images
   cached_network_image: ^3.1.0
+  #for pull down refresh and pull up fetch more
   pull_to_refresh: ^2.0.0
+  #for displaying google admob ads in native way
   native_admob_flutter: ^1.5.0
+  #for checking users device internet connectivity
+  
   
 dev_dependencies:
   flutter_test:

@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_node_auth/controller/api_controller.dart';
-import 'package:flutter_node_auth/utils/ad_helper.dart';
 import 'package:flutter_node_auth/view/ad_stuff/native_ads.dart';
 import 'package:flutter_node_auth/view/components/home_components.dart';
 import 'package:flutter_node_auth/view/components/product_card.dart';
@@ -18,7 +17,6 @@ import 'dart:math' as math;
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class _HomeScreenState extends State<HomeScreen> {
-  // final List<String> categories = ["Cars", "Electronics", "Jobs", "Clothes", "Shoes", "House Hold"];
   final List<Map<String, dynamic>> categories = [
     {"name": "Cars", "icon": Icons.car_rental},
     {"name": "Electronics", "icon": Icons.laptop},
@@ -149,7 +147,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     crossAxisSpacing: 0.0,
                     itemCount: controller.products.length,
                     itemBuilder: (context, index) {
-                      if (index == 3) {
+                      if (index == 3 || index == 13 || index == 23) {
                         return const NativeAds();
                       } else {
                         return InkWell(
@@ -249,8 +247,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         children: [
                           Icon(categories[index]['icon']),
                           SizedBox(width: size.width * 0.02),
-                          // ignore: unnecessary_string_interpolations
-                          Center(child: Text('${categories[index - 1]['name']}', style: const TextStyle(color: Colors.black))),
+                          Center(child: Text(categories[index - 1]['name'], style: const TextStyle(color: Colors.black))),
                         ],
                       ),
                     );

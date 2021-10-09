@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_node_auth/controller/api_controller.dart';
 import 'package:flutter_node_auth/controller/auth_controller.dart';
 import 'package:flutter_node_auth/controller/lang_controller.dart';
-import 'package:flutter_node_auth/utils/ad_helper.dart';
 import 'package:flutter_node_auth/utils/strings.dart';
 import 'package:flutter_node_auth/view/root.dart';
 import 'package:get/instance_manager.dart';
