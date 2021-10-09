@@ -73,6 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _createBottomBannerAd();
+    _createInlineBannerAd();
     _isVisible = true;
     _hideButtonController = ScrollController();
     _hideButtonController.addListener(() {
@@ -106,6 +107,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void dispose() {
     super.dispose();
     _bottomBannerAd.dispose();
+    _inlineBannerAd.dispose();
     _hideButtonController.dispose();
   }
 
@@ -138,6 +140,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _refreshController.refreshCompleted();
   }
 
+  //-------bottombannerad
   late BannerAd _bottomBannerAd;
   bool _isBottomBannerAdLoaded = false;
 
@@ -158,6 +161,39 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
     _bottomBannerAd.load();
+  }
+
+  //--------------
+  //--------------inlinebannerad--
+  final _inlineAdIndex = 3;
+  late BannerAd _inlineBannerAd;
+  bool _isInlineBannerAdLoaded = false;
+
+  void _createInlineBannerAd() {
+    // AdSize adSize = const AdSize(height: 300, width: 50);
+    _inlineBannerAd = BannerAd(
+      size: AdSize.mediumRectangle,
+      adUnitId: AdHelper.bannerAdUnitId,
+      request: const AdRequest(),
+      listener: BannerAdListener(onAdLoaded: (_) {
+        print('inline ad loaded');
+        setState(() {
+          _isInlineBannerAdLoaded = true;
+        });
+      }, onAdFailedToLoad: (ad, error) {
+        print('inline ad failed');
+        ad.dispose();
+      }),
+    );
+    _inlineBannerAd.load();
+  }
+  //-------------------------
+
+  int _getGridViewItemIndex(int index) {
+    if (_isInlineBannerAdLoaded && index >= _inlineAdIndex) {
+      return index - 1;
+    }
+    return index;
   }
 
   @override
@@ -306,17 +342,29 @@ class _HomeScreenState extends State<HomeScreen> {
                   crossAxisCount: 2,
                   mainAxisSpacing: 20.0,
                   crossAxisSpacing: 0.0,
-                  itemCount: controller.products.length,
-                  itemBuilder: (context, index) => InkWell(
-                    onTap: () {
-                      Get.to(() => ProductDetail(selectedProductIndex: index), transition: Transition.cupertino);
-                    },
-                    child: ProductCard(
-                      controller: controller,
-                      index: index,
-                      size: size,
-                    ),
-                  ),
+                  itemCount: controller.products.length + (_isInlineBannerAdLoaded ? 1 : 0),
+                  itemBuilder: (context, index) {
+                    if (_isInlineBannerAdLoaded && index == _inlineAdIndex) {
+                      return SizedBox(
+                        height: _inlineBannerAd.size.height.toDouble(),
+                        width: _inlineBannerAd.size.width.toDouble(),
+                        child: AdWidget(
+                          ad: _inlineBannerAd,
+                        ),
+                      );
+                    } else {
+                      return InkWell(
+                        onTap: () {
+                          Get.to(() => ProductDetail(selectedProductIndex: _getGridViewItemIndex(index)), transition: Transition.cupertino);
+                        },
+                        child: ProductCard(
+                          controller: controller,
+                          index: _getGridViewItemIndex(index),
+                          size: size,
+                        ),
+                      );
+                    }
+                  },
                 ),
               )
             ],
