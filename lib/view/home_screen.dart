@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_node_auth/constants.dart';
 import 'package:flutter_node_auth/controller/api_controller.dart';
+import 'package:flutter_node_auth/utils/ad_helper.dart';
 import 'package:flutter_node_auth/view/components/home_components.dart';
 import 'package:flutter_node_auth/view/product_add.dart';
 import 'package:flutter_node_auth/view/product_detail.dart';
@@ -16,6 +17,7 @@ import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:get/get_utils/src/extensions/string_extensions.dart';
 import 'package:get/instance_manager.dart';
 import 'package:get/route_manager.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'dart:math' as math;
 
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -70,12 +72,10 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    _createBottomBannerAd();
     _isVisible = true;
     _hideButtonController = ScrollController();
     _hideButtonController.addListener(() {
-      // if (_hideButtonController.position.pixels >= _hideButtonController.position.maxScrollExtent) {
-      //   Get.find<ApiController>().getProducts(false);
-      // }
       if (_hideButtonController.position.userScrollDirection == ScrollDirection.reverse) {
         if (_isVisible == true) {
           /* only set when the previous state is false
@@ -105,6 +105,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void dispose() {
     super.dispose();
+    _bottomBannerAd.dispose();
     _hideButtonController.dispose();
   }
 
@@ -118,8 +119,6 @@ class _HomeScreenState extends State<HomeScreen> {
         _refreshController.loadComplete();
       } else {
         _refreshController.loadNoData();
-
-        // _refreshController.loadFailed();
       }
     } catch (e) {
       print(e);
@@ -139,15 +138,42 @@ class _HomeScreenState extends State<HomeScreen> {
     _refreshController.refreshCompleted();
   }
 
-// onNotification: (notification) {
-//               notification.disallowGlow();
-//               return true;
-//             },
+  late BannerAd _bottomBannerAd;
+  bool _isBottomBannerAdLoaded = false;
+
+  void _createBottomBannerAd() {
+    _bottomBannerAd = BannerAd(
+      size: AdSize.banner,
+      adUnitId: AdHelper.bannerAdUnitId,
+      request: const AdRequest(),
+      listener: BannerAdListener(
+        onAdLoaded: (_) {
+          setState(() {
+            _isBottomBannerAdLoaded = true;
+          });
+        },
+        onAdFailedToLoad: (ad, error) {
+          ad.dispose();
+        },
+      ),
+    );
+    _bottomBannerAd.load();
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
+      bottomNavigationBar: _isBottomBannerAdLoaded
+          ? SizedBox(
+              height: _bottomBannerAd.size.height.toDouble(),
+              width: _bottomBannerAd.size.width.toDouble(),
+              child: AdWidget(
+                ad: _bottomBannerAd,
+              ),
+            )
+          : null,
       drawer: const Drawer(),
       floatingActionButton: Visibility(
         visible: _isVisible,
