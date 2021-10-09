@@ -1,9 +1,12 @@
 import 'dart:io';
 
+import 'package:connectivity/connectivity.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_node_auth/constants.dart';
 import 'package:flutter_node_auth/controller/auth_controller.dart';
 import 'package:flutter_node_auth/model/product.dart';
+import 'package:flutter_node_auth/utils/interceptor/dio_connectivity_request_retrier.dart';
+import 'package:flutter_node_auth/utils/interceptor/retry_interceptor.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:get/instance_manager.dart';
@@ -24,13 +27,13 @@ class ApiController extends GetxController {
   Future<bool> getProducts(bool isinitcall) async {
     String? _token = await _storage.read(key: _tokenKey);
     if (_token != null) {
-      Dio _dio = Dio(
-        BaseOptions(
-          baseUrl: kbaseUrl,
-          connectTimeout: 10000,
-          receiveTimeout: 100000,
-          headers: {'x-access-token': _token},
-          responseType: ResponseType.json,
+      Dio _dio = Dio(BaseOptions(baseUrl: kbaseUrl, headers: {'x-access-token': _token}, responseType: ResponseType.json));
+      _dio.interceptors.add(
+        RetryOnConnectionChangeInterceptor(
+          requestRetrier: DioConnectivityRequestRetrier(
+            connectivity: Connectivity(),
+            dio: Dio(),
+          ),
         ),
       );
       try {
@@ -129,10 +132,18 @@ class ApiController extends GetxController {
       Dio _dio = Dio(
         BaseOptions(
           baseUrl: kbaseUrl,
-          connectTimeout: 10000,
-          receiveTimeout: 100000,
+          // connectTimeout: 10000,
+          // receiveTimeout: 100000,
           headers: {'x-access-token': _token},
           responseType: ResponseType.json,
+        ),
+      );
+      _dio.interceptors.add(
+        RetryOnConnectionChangeInterceptor(
+          requestRetrier: DioConnectivityRequestRetrier(
+            connectivity: Connectivity(),
+            dio: Dio(),
+          ),
         ),
       );
 

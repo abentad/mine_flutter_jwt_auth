@@ -1,11 +1,12 @@
-import 'dart:convert';
 import 'dart:io';
-
+import 'package:connectivity/connectivity.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_node_auth/constants.dart';
 import 'package:flutter_node_auth/controller/api_controller.dart';
 import 'package:flutter_node_auth/model/user.dart';
+import 'package:flutter_node_auth/utils/interceptor/dio_connectivity_request_retrier.dart';
+import 'package:flutter_node_auth/utils/interceptor/retry_interceptor.dart';
 import 'package:flutter_node_auth/view/auth/auth_choice.dart';
 import 'package:flutter_node_auth/view/home_screen.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -13,7 +14,6 @@ import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:get/instance_manager.dart';
 import 'package:get/route_manager.dart';
-import 'package:http/http.dart' as http;
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -88,10 +88,18 @@ class AuthController extends GetxController {
       "profile": await MultipartFile.fromFile(file.path),
     });
 
-    Dio dio = Dio();
+    Dio _dio = Dio();
+    _dio.interceptors.add(
+      RetryOnConnectionChangeInterceptor(
+        requestRetrier: DioConnectivityRequestRetrier(
+          connectivity: Connectivity(),
+          dio: Dio(),
+        ),
+      ),
+    );
 
     try {
-      final response = await dio.post(endPoint, data: formData);
+      final response = await _dio.post(endPoint, data: formData);
       if (response.statusCode == 201) {
         _currentUser = User.fromJson(response.toString());
         await _storage.write(key: _tokenKey, value: _currentUser!.token);
@@ -110,13 +118,19 @@ class AuthController extends GetxController {
 
   //signin
   Future<bool> signInUser(String email, String password) async {
-    final response = await http.post(
-      Uri.parse(kbaseUrl + '/user/signin'),
-      headers: <String, String>{'Content-Type': 'application/json; charset=UTF-8'},
-      body: jsonEncode(<String, String>{'email': email.trim(), 'password': password.trim()}),
+    FormData _formData = FormData.fromMap({"email": email.trim(), "password": password.trim()});
+    Dio _dio = Dio(BaseOptions(baseUrl: kbaseUrl, responseType: ResponseType.plain));
+    _dio.interceptors.add(
+      RetryOnConnectionChangeInterceptor(
+        requestRetrier: DioConnectivityRequestRetrier(
+          connectivity: Connectivity(),
+          dio: Dio(),
+        ),
+      ),
     );
+    Response response = await _dio.post('/user/signin', data: _formData);
     if (response.statusCode == 200) {
-      _currentUser = User.fromJson(response.body);
+      _currentUser = User.fromJson(response.data);
       await _storage.write(key: _tokenKey, value: _currentUser!.token);
       print('fetching products');
       bool result = await Get.find<ApiController>().getProducts(true);
@@ -130,12 +144,18 @@ class AuthController extends GetxController {
 
   //signin
   Future<bool> signInWithToken(String token) async {
-    final response = await http.get(
-      Uri.parse(kbaseUrl + '/user/signinwithtoken'),
-      headers: <String, String>{'x-access-token': token},
+    Dio _dio = Dio(BaseOptions(baseUrl: kbaseUrl, headers: {'x-access-token': token}, responseType: ResponseType.plain));
+    _dio.interceptors.add(
+      RetryOnConnectionChangeInterceptor(
+        requestRetrier: DioConnectivityRequestRetrier(
+          connectivity: Connectivity(),
+          dio: Dio(),
+        ),
+      ),
     );
+    Response response = await _dio.get('/user/signinwithtoken');
     if (response.statusCode == 200) {
-      _currentUser = User.fromJson(response.body);
+      _currentUser = User.fromJson(response.data);
       print('fetching products');
       bool result = await Get.find<ApiController>().getProducts(true);
       if (result == true) {
