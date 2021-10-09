@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_node_auth/view/sign_in.dart';
-import 'package:flutter_node_auth/view/sign_up.dart';
+import 'package:flutter_node_auth/view/auth/sign_in.dart';
+import 'package:flutter_node_auth/view/auth/sign_up.dart';
 
 class AuthChoice extends StatelessWidget {
   const AuthChoice({Key? key}) : super(key: key);
@@ -33,8 +33,7 @@ class AuthChoice extends StatelessWidget {
             SizedBox(height: size.height * 0.02),
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 40.0),
-              child: Text('Manage Your Expenses Seemlessly.',
-                  style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.w500, color: Colors.grey), textAlign: TextAlign.center),
+              child: Text('Manage Your Expenses Seemlessly.', style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.w500, color: Colors.grey), textAlign: TextAlign.center),
             ),
             SizedBox(height: size.height * 0.12),
             Padding(

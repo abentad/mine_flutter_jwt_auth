@@ -3,15 +3,16 @@ import 'package:flutter/services.dart';
 import 'package:flutter_node_auth/controller/api_controller.dart';
 import 'package:flutter_node_auth/controller/auth_controller.dart';
 import 'package:flutter_node_auth/controller/lang_controller.dart';
+import 'package:flutter_node_auth/utils/ad_helper.dart';
 import 'package:flutter_node_auth/utils/strings.dart';
 import 'package:flutter_node_auth/view/root.dart';
 import 'package:get/instance_manager.dart';
 import 'package:get/route_manager.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:native_admob_flutter/native_admob_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  MobileAds.instance.initialize();
+  await MobileAds.initialize();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(statusBarColor: Colors.white, statusBarIconBrightness: Brightness.dark));
   Get.put<LanguageController>(LanguageController());

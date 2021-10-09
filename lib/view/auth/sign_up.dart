@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_node_auth/controller/auth_controller.dart';
 import 'package:flutter_node_auth/view/home_screen.dart';
-import 'package:flutter_node_auth/view/sign_in.dart';
+import 'package:flutter_node_auth/view/auth/sign_in.dart';
 import 'package:get/get.dart';
 import 'package:get/instance_manager.dart';
 import 'package:image_picker/image_picker.dart';
@@ -38,8 +38,8 @@ class SignUp extends StatelessWidget {
                 SizedBox(height: size.height * 0.02),
                 const Padding(
                   padding: EdgeInsets.only(left: 20.0, right: 60.0),
-                  child: Text('Create an account so you can order your favorite food even faster',
-                      style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w400, color: Colors.grey)),
+                  child:
+                      Text('Create an account so you can order your favorite food even faster', style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w400, color: Colors.grey)),
                 ),
                 SizedBox(height: size.height * 0.06),
                 Padding(
@@ -144,8 +144,8 @@ class SignUp extends StatelessWidget {
                   child: MaterialButton(
                     onPressed: () async {
                       File file = await Get.find<AuthController>().chooseImage(ImageSource.gallery);
-                      bool _result = await Get.find<AuthController>()
-                          .signUpUser(_usernameController.text, _emailController.text, _phoneNumberController.text, _passwordController.text, file);
+                      bool _result =
+                          await Get.find<AuthController>().signUpUser(_usernameController.text, _emailController.text, _phoneNumberController.text, _passwordController.text, file);
                       if (_result) {
                         Get.offAll(() => const HomeScreen(), transition: Transition.fade);
                       }

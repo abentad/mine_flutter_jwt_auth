@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_node_auth/constants.dart';
 import 'package:flutter_node_auth/controller/api_controller.dart';
 import 'package:flutter_node_auth/model/user.dart';
-import 'package:flutter_node_auth/view/auth_choice.dart';
+import 'package:flutter_node_auth/view/auth/auth_choice.dart';
 import 'package:flutter_node_auth/view/home_screen.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
